@@ -39,7 +39,7 @@ jobs:
       run: |
         set -eux
 
-        git clone --single-branch https://git.openwrt.org/openwrt/openwrt.git
+        git clone https://git.openwrt.org/openwrt/openwrt.git
         cd openwrt
         git pull
 
