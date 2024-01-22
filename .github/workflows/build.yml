@@ -52,6 +52,19 @@ jobs:
         git tag
         git checkout v${{ inputs.version }}
 
+    - name: Cache build
+      working-directory: openwrt
+      id: cache-build
+      uses: actions/cache@v3.3.3
+      with:
+        path: |
+          bin/
+          build_dir/
+          dl/
+          feeds/
+          staging_dir/
+        key: built-${{ inputs.version }}
+
     - name: Update the feeds
       working-directory: openwrt
       run: |
