@@ -17,6 +17,8 @@ jobs:
       TZ: Asia/Tokyo
 
     steps:
+    - uses: actions/checkout@v4.0.0
+
     - name: Set short git commit SHA
       id: vars
       run: |
@@ -25,8 +27,6 @@ jobs:
 
     - name: Confirm git commit SHA output
       run: echo ${{ env.COMMIT_SHORT_SHA }}
-
-    - uses: actions/checkout@v4.0.0
 
     - name: Installing dependencies
       run: |
