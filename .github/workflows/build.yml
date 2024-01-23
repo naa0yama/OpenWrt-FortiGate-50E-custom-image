@@ -15,6 +15,8 @@ jobs:
     timeout-minutes: 360 # default 6 hour
     env:
       TZ: Asia/Tokyo
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v4.1.1
