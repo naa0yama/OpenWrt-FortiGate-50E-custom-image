@@ -16,7 +16,7 @@ jobs:
       TZ: Asia/Tokyo
 
     steps:
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.1.1
 
       - name: Set short git commit SHA
         id: vars
