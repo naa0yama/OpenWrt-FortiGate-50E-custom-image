@@ -12,11 +12,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 360 # default 6 hour
     env:
       TZ: Asia/Tokyo
 
     steps:
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.1.1
 
       - name: Set short git commit SHA
         id: vars
@@ -88,7 +89,7 @@ jobs:
         run: |
           set -eux
 
-          time make -j $(($(nproc)+1))
+          time make -j $(($(nproc)+1)) V=sc
 
       - name: Archive artifacts
         working-directory: openwrt/bin/targets/mvebu/cortexa9
