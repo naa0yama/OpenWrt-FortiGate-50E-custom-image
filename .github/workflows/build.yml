@@ -92,7 +92,7 @@ jobs:
           set -eux
 
           cd .
-          time make --directory ./ -j $(($(nproc)+1)) V=s
+          time make --directory ./ -j $(($(nproc)+1))
 
       - name: Archive artifacts
         working-directory: openwrt/bin/targets/mvebu/cortexa9
