@@ -37,7 +37,7 @@ Global build settings
         (https://github.com/naa0yama) Manufacturer URL
 
     Base system  --->
-        <*> dnsmasq-dhcpv6................. DNS and DHCP server (with DHCPv6 support)
+        <M> dnsmasq-dhcpv6................. DNS and DHCP server (with DHCPv6 support)
 
     Administration  --->
         <*> htop........................................ Interactive processes viewer
