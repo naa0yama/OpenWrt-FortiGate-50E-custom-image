@@ -64,6 +64,7 @@ jobs:
             ./openwrt/dl/
             ./openwrt/feeds/
             ./openwrt/staging_dir/
+            ./openwrt/tmp/
           key: built-${{ inputs.version }}
 
       - name: Cache hit check
@@ -92,7 +93,8 @@ jobs:
           set -eux
 
           cd .
-          time make --directory ./ -j $(($(nproc)+1))
+          time make --directory ./ -j $(($(nproc)+1)) clean
+          time make --directory ./ -j $(($(nproc)+1)) download world
 
       - name: Archive artifacts
         working-directory: openwrt/bin/targets/mvebu/cortexa9
