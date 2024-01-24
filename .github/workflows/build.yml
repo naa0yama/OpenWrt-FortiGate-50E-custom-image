@@ -103,30 +103,18 @@ jobs:
 
           tar -zcvf openwrt-${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}-mvebu-cortexa9-fortinet_fg-50e.tar.gz ./*
 
-      - uses: actions/create-release@master
-        id: create_release # ファイルアップロードに outputs の値を使用するため ID が必要
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Pre-Release
+        uses: softprops/action-gh-release@v1
         with:
+          name: OpenWrt Custom ${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}
           tag_name: ${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}
-          release_name: OpenWrt Custom ${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}
           body: |
             * OpenWrt ${{ inputs.version }}
             * My repo Commit hash: `${{ env.COMMIT_SHORT_SHA }}`
 
             This firmware was built by @naa0yama
+
           draft: true
           prerelease: true
-
-      - uses: actions/upload-release-asset@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          # リリースのアップロード URL (必須)
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          # 添付ファイルのパス (必須)
-          asset_path: openwrt/bin/targets/mvebu/cortexa9/openwrt-${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}-mvebu-cortexa9-fortinet_fg-50e.tar.gz
-          # 添付ファイルの表示名 (必須)
-          asset_name: openwrt-${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}-mvebu-cortexa9-fortinet_fg-50e.tar.gz
-          # 添付ファイルに対応する content-type (必須)
-          asset_content_type: application/x-gzip
+          files: |
+            openwrt/bin/targets/mvebu/cortexa9/openwrt-${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}-mvebu-cortexa9-fortinet_fg-50e.tar.gz
