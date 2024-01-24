@@ -24,8 +24,13 @@ Target Images  --->
     [ ] Make /var persistent (NEW)
 
 Global build settings
+    [*] Include build configuration in firmware
     Kernel build options  --->
         [*] L3 Master device support
+
+[*] Advanced configuration options (for developers)  --->
+    [*] Use ccache
+        (.ccache) Set ccache directory
 
 [*] Build the OpenWrt Image Builder
 [ ] Build the OpenWrt SDK
