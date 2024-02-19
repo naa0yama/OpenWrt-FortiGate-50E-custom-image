@@ -42,7 +42,19 @@ Global build settings
         (https://github.com/naa0yama) Manufacturer URL
 
     Base system  --->
-        <M> dnsmasq-dhcpv6................. DNS and DHCP server (with DHCPv6 support)
+        < > dnsmasq.............................................. DNS and DHCP server
+        < > dnsmasq-dhcpv6................. DNS and DHCP server (with DHCPv6 support)
+        <*> dnsmasq-full
+        [*]   Build with DHCP support. (NEW)
+        [*]     Build with DHCPv6 support. (NEW)
+        [*]   Build with DNSSEC support. (NEW)
+        [*]   Build with the facility to act as an authoritative DNS server. (NEW)
+        [*]   Build with IPset support.
+        [*]   Build with Nftset support. (NEW)
+        [*]   Build with Conntrack support. (NEW)
+        [*]   Build with NO_ID. (hide *.bind pseudo domain) (NEW)
+        [*]   Build with HAVE_BROKEN_RTC.
+        [*]   Build with TFTP server support. (NEW)
 
     Administration  --->
         <*> htop........................................ Interactive processes viewer
@@ -62,7 +74,9 @@ Global build settings
                 <*> Japanese (ja)
 
         3. Applications  --->
+            <*> luci-app-commands.............................. LuCI Shell Command Module
             <*> luci-app-https-dns-proxy..................... DNS Over HTTPS Proxy Web UI
+            <*> luci-app-mwan3............... LuCI support for the MWAN3 MultiWAN Manager
 
         5. Protocols  --->
             <*> luci-proto-vxlan
@@ -82,17 +96,23 @@ Global build settings
                 <*>   frr-zebra................................................... Zebra daemon
 
             <*> ip-full................................... Routing control utility (full)
+            <*> mwan3........... Multiwan hotplug script with connection tracking support
 
         Time Synchronization  --->
             <*> chrony-nts.................. A versatile NTP client and server (with NTS)
 
         -*- https-dns-proxy..................................... DNS Over HTTPS Proxy
+        <*> iftop............................. display bandwith usage on an interface
 
         VPN  --->
             <*> wireguard-tools................. WireGuard userspace control program (wg)
 
     Utilities
         <*> dmesg............................ print or control the kernel ring buffer
+        <*> shadow-utils.............................. The PLD Linux shadow utilities
+              Select shadow utilities  --->
+                [*] Include all PLD shadow utilities (NEW) 
+
         <*> prometheus-node-exporter-lua.................... Prometheus node exporter
         <*>   prometheus-node-exporter-lua-nat_traffic
         <*>   prometheus-node-exporter-lua-netstat
