@@ -107,6 +107,9 @@ Global build settings
         VPN  --->
             <*> wireguard-tools................. WireGuard userspace control program (wg)
 
+        Web Servers/Proxies  ---> 
+            <*> cloudflared..................................... Cloudflare Tunnel client
+
     Utilities
         <*> dmesg............................ print or control the kernel ring buffer
         <*> shadow-utils.............................. The PLD Linux shadow utilities
