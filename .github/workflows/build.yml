@@ -10,7 +10,7 @@ on:
         type: string
 
 jobs:
-  create-build-system:
+  build:
     container:
       image: ghcr.io/${{ github.repository }}/build-system:${{ inputs.version }}
       credentials:
