@@ -8,5 +8,17 @@
   ],
   "pre-commit": {
     "enabled": true
-  }
+  },
+  "regexManagers": [
+    {
+      "fileMatch": [
+        "^Dockerfile$"
+      ],
+      "matchStrings": [
+        "ENV OPENWRT_VERSION=\"(?<currentValue>v\\d+\\.\\d+\\.\\d+)\"\n"
+      ],
+      "depNameTemplate": "openwrt/openwrt",
+      "datasourceTemplate": "github-releases"
+    }
+  ]
 }

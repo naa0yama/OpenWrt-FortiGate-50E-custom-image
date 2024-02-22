@@ -1,6 +1,12 @@
 # OpenWrt FortiGate 50E custom image
 OpenWrt custom image for Fortinet FortiGate 50E (FRRouting+VRF+veth+WireGuard)
 
+```bash
+mkdir -p dist
+time docker run --rm -it -u $(id -u):$(id -g) -v ./config:/config -v dist:/dist builder
+
+```
+
 ## Firmware settings
 
 **[Custom settings can be found in this file](mvebu-cortexa9-fortinet_fg-50e.ini)**
