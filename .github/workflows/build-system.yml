@@ -25,7 +25,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Checkout repository
-        uses: actions/checkout@v4.0.0
+        uses: actions/checkout@v4.1.1
 
       - name: "get openwrt version from Dockerfile"
         run: |
@@ -50,7 +50,7 @@ jobs:
             type=raw,value=${{ env.OPENWRT_VERSION }},enable={{is_default_branch}}
 
       - name: Build and push
-        uses: docker/build-push-action@v5.0.0
+        uses: docker/build-push-action@v5.1.0
         with:
           push: true
           cache-from: type=gha,scope=build-system-${{ env.OPENWRT_VERSION }}
