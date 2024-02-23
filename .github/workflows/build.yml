@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/${{ github.repository }}/build-system:${{ inputs.version }}
+      image: ghcr.io/naa0yama/openwrt-fortigate-50e-custom-image/build-system:${{ inputs.version }}
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.github_token }}
