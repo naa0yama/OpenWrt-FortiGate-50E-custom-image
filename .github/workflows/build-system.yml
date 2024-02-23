@@ -11,6 +11,7 @@ jobs:
       TZ: Asia/Tokyo
     permissions:
       contents: write
+      packages: write
 
     steps:
       - name: Set up QEMU
