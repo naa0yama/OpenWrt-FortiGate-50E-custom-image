@@ -8,9 +8,9 @@ on:
         default: "v23.05.2"
         description: OpenWrt version
         type: string
-
 jobs:
   build:
+    runs-on: ubuntu-latest
     container:
       image: ghcr.io/${{ github.repository }}/build-system:${{ inputs.version }}
       credentials:
@@ -21,6 +21,7 @@ jobs:
       TZ: Asia/Tokyo
     permissions:
       contents: write
+      packages: write
 
     steps:
       - uses: actions/checkout@v4.1.1
