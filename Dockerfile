@@ -110,5 +110,5 @@ COPY --chown=${BUILD_USERNAME}:${BUILD_USERNAME} \
     config/mvebu-cortexa9-fortinet_fg-50e.ini "/home/${BUILD_USERNAME}/openwrt/.config"
 RUN set -eux \
     && make defconfig \
-    && make --directory ./ -j $(($(nproc)+1)) download world \
+    && make --directory ./ -j $(($(nproc)+1)) V=sc download world \
     && rm -rf bin/targets
