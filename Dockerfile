@@ -111,4 +111,4 @@ COPY --chown=${BUILD_USERNAME}:${BUILD_USERNAME} \
 RUN set -eux \
     && make defconfig \
     && make --directory ./ -j $(($(nproc)+1)) download world \
-    && rm -rf openwrt/bin/targets
+    && rm -rf bin/targets
