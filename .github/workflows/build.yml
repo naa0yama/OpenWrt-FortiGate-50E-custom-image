@@ -72,4 +72,4 @@ jobs:
           draft: true
           prerelease: true
           files: |
-            openwrt/bin/targets/mvebu/cortexa9/openwrt-${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}-mvebu-cortexa9-fortinet_fg-50e.tar.gz
+            bin/targets/mvebu/cortexa9/openwrt-${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}-mvebu-cortexa9-fortinet_fg-50e.tar.gz
