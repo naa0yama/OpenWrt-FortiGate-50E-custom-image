@@ -10,7 +10,6 @@ jobs:
     env:
       TZ: Asia/Tokyo
     permissions:
-      contents: write
       packages: write
 
     steps:
