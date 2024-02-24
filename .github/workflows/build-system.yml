@@ -7,7 +7,7 @@ on:
         required: true
         default: "V=s"
         description: |
-          make options. (default: V=s)\n\n
+          make options. (default: V=s)
 
           [s]: stdout+stderr, [c]: commands, [w]: warnings/errors only
         type: choice
