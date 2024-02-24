@@ -7,11 +7,11 @@ on:
         required: true
         default: "V=s"
         description: |
-          make options. (default: V=s)
+          make options. (default: V=s)\n\n
 
-          - s: stdout+stderr
-          - c: commands (for build systems that suppress commands by default, e.g. kbuild, cmake)
-          - w: warnings/errors only
+          - s: stdout+stderr\n
+          - c: commands (for build systems that suppress commands by default, e.g. kbuild, cmake)\n
+          - w: warnings/errors only\n
         type: choice
         options:
         - "V=s"
