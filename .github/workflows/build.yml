@@ -10,14 +10,14 @@ on:
         type: string
       make_options:
         required: true
-        default: ""
+        default: "V=c"
         description: |
-          make options. (default: "")
+          make options. (default: "V=c")
 
           [s]: stdout+stderr, [c]: commands, [w]: warnings/errors only
         type: choice
         options:
-        - ""
+        - "V=c"
         - "V=w"
         - "V=sc"
         - "V=sw"
