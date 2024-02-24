@@ -102,13 +102,13 @@ RUN set -eux \
 FROM runner
 
 ARG \
-    BUILDMAKE_OPTIONS
+    BUILD_MAKE_OPTIONS
 
-COPY --chown=${BUILD_USERNAME}:${BUILD_USERNAME} \
+COPY --chown=root:root \
     config/mvebu-cortexa9-fortinet_fg-50e.ini "/opt/openwrt/.config"
 
 RUN set -eux \
     && cd /opt/openwrt \
     && make defconfig \
-    && make --directory ./ -j $(($(nproc)+1)) ${BUILDMAKE_OPTIONS} download world \
+    && make --directory ./ -j $(($(nproc)+1)) ${BUILD_MAKE_OPTIONS} download world \
     && rm -rf bin/targets

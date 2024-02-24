@@ -65,7 +65,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5.1.0
         env:
-          BUILDMAKE_OPTIONS: ${{ inputs.make_options }}
+          BUILD_MAKE_OPTIONS: ${{ inputs.make_options }}
         with:
           push: true
           cache-from: type=gha,scope=build-system-${{ env.OPENWRT_VERSION }}
