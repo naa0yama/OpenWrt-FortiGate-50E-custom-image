@@ -125,6 +125,95 @@ Global build settings
 
 ```
 
+```text
+Target System (Marvell EBU Armada)  --->
+Subtarget (Marvell Armada 37x/38x/XP)  --->
+Target Profile (Fortinet FortiGate 50E)  --->
+
+Target Images  --->
+    [*] ramdisk  ----
+        *** Root filesystem archives ***
+    [ ] cpio.gz (NEW)
+    [ ] tar.gz
+        *** Root filesystem images ***
+    [ ] ext4 (NEW)  ----
+    [*] squashfs (NEW)  --->
+        *** Image Options ***
+    (16) Kernel partition size (in MiB) (NEW)
+    (104) Root filesystem partition size (in MiB) (NEW)
+    [ ] Make /var persistent (NEW)
+
+Global build settings
+    [*] Include build configuration in firmware
+    Kernel build options  --->
+        [*] L3 Master device support
+
+[*] Build the OpenWrt Image Builder
+[ ] Build the OpenWrt SDK
+[ ] Build the LLVM-BPF toolchain tarball
+[ ] Package the OpenWrt-based Toolchain
+[*] Image configuration  --->
+    [*]   Version configuration options  --->
+        (https://downloads.openwrt.org/releases/23.05.2) Release repository
+        (https://github.com/naa0yama/OpenWrt-FortiGate-50E-custom-image/releases) Release Homepage
+        (naa0yama) Manufacturer name
+        (https://github.com/naa0yama) Manufacturer URL
+
+    Kernel modules  --->
+        Network Support  --->
+            <*> kmod-tcp-bbr.................................. BBR TCP congestion control
+            <*> kmod-veth................................... Virtual ethernet pair device
+            <*> kmod-vrf........................... Virtual Routing and Forwarding (Lite)
+            {*} kmod-vxlan................................... Native VXLAN Kernel support
+            -*- kmod-wireguard........................... WireGuard secure network tunnel
+
+```
+
+Packages
+
+```bash
+cloudflared
+dmesg
+frr
+frr-bfdd
+frr-bgpd
+frr-libfrr
+frr-pythontools
+frr-staticd
+frr-vrrpd
+frr-vtysh
+frr-watchfrr
+frr-zebra
+htop
+https-dns-proxy
+iftop
+ip-full
+kmod-iptunnel
+kmod-tcp-bbr
+kmod-udptunnel4
+kmod-udptunnel6
+kmod-veth
+kmod-vrf
+kmod-vxlan
+kmod-wireguard
+luci-app-commands
+luci-app-https-dns-proxy
+luci-app-natmap
+luci-app-ttyd
+luci-proto-vxlan
+luci-proto-wireguard
+prometheus-node-exporter-lua
+prometheus-node-exporter-lua-nat_traffic
+prometheus-node-exporter-lua-netstat
+prometheus-node-exporter-lua-openwrt
+prometheus-node-exporter-lua-textfile
+prometheus-node-exporter-lua-uci_dhcp_host
+uhttpd-mod-lua
+vxlan
+wireguard-tools
+
+```
+
 ## Local build
 
 [[OpenWrt Wiki] Build system setup](https://openwrt.org/docs/guide-developer/toolchain/install-buildsystem)
@@ -152,8 +241,28 @@ make defconfig
 time make --directory ./ -j $(($(nproc)+1)) clean
 time make --directory ./ -j $(($(nproc)+1)) download
 time make --directory ./ -j $(($(nproc)+1)) world
-time make json_overview_image_info
-time make --directory ./ -j $(($(nproc)+1)) checksum
+
+```
+
+## 公式の設定ファイル
+
+```bash
+curl -o .config https://downloads.openwrt.org/releases/23.05.2/targets/mvebu/cortexa9/config.buildinfo
+
+```
+
+## 差分のみ抽出
+
+```bash
+./scripts/diffconfig.sh > .config.diff.ini
+
+```
+
+## full config に変換
+
+```bash
+make defconfig
+
 ```
 
 ### 大体の build 時間の推移
@@ -226,12 +335,17 @@ $ cat disk_after
 ## ImageBuilder
 
 ```bash
-wget https://downloads.openwrt.org/releases/23.05.2/targets/mvebu/cortexa9/openwrt-imagebuilder-23.05.2-mvebu-cortexa9.Linux-x86_64.tar.xz
-tar zxvf openwrt-imagebuilder-23.05.2-mvebu-cortexa9.Linux-x86_64.tar.xz
-cd openwrt-imagebuilder-23.05.2-mvebu-cortexa9.Linux-x86_64
+export OPENWRT_VERSION="23.05.2"
+
+wget "https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/targets/mvebu/cortexa9/openwrt-imagebuilder-${OPENWRT_VERSION}-mvebu-cortexa9.Linux-x86_64.tar.xz"
+
+mkdir -p buildtool && \
+tar -J -x -f openwrt-imagebuilder-*.tar.xz --strip-components 1 -C ./buildtool && \
+cd buildtool
 
 ```
 
 ```bash
+time make clean && make image PROFILE="fortinet_fg-50e" PACKAGES=""
 
 ```
