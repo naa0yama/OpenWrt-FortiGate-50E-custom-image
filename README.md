@@ -222,3 +222,16 @@ $ cat disk_after
 1       ./.github
 
 ```
+
+## ImageBuilder
+
+```bash
+wget https://downloads.openwrt.org/releases/23.05.2/targets/mvebu/cortexa9/openwrt-imagebuilder-23.05.2-mvebu-cortexa9.Linux-x86_64.tar.xz
+tar zxvf openwrt-imagebuilder-23.05.2-mvebu-cortexa9.Linux-x86_64.tar.xz
+cd openwrt-imagebuilder-23.05.2-mvebu-cortexa9.Linux-x86_64
+
+```
+
+```bash
+
+```
