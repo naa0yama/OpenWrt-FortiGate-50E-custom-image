@@ -5,14 +5,14 @@ on:
     inputs:
       make_options:
         required: true
-        default: "V=s"
+        default: "V=w"
         description: |
-          make options. (default: V=s)
+          make options. (default: V=w)
 
           [s]: stdout+stderr, [c]: commands, [w]: warnings/errors only
         type: choice
         options:
-        - "V=s"
+        - "V=w"
         - "V=sc"
         - "V=sw"
 
