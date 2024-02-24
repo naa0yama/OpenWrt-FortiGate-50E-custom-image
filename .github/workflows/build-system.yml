@@ -2,11 +2,26 @@ name: Build system provisioning
 
 on:
   workflow_dispatch:
+    inputs:
+      make_options:
+        required: true
+        default: "V=s"
+        description: |
+          make options. (default: V=s)
+
+          - s: stdout+stderr
+          - c: commands (for build systems that suppress commands by default, e.g. kbuild, cmake)
+          - w: warnings/errors only
+        type: choice
+        options:
+        - "V=s"
+        - "V=sc"
+        - "V=sw"
 
 jobs:
   create-build-system:
     runs-on: ubuntu-latest
-    timeout-minutes: 360 # default 6 hour
+    timeout-minutes: 180 # default 6 hour
     env:
       TZ: Asia/Tokyo
     permissions:
