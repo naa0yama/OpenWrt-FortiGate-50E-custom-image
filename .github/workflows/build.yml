@@ -8,6 +8,7 @@ on:
         default: "v23.05.2"
         description: OpenWrt version
         type: string
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,7 +17,7 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.github_token }}
-    timeout-minutes: 360 # default 6 hour
+    timeout-minutes: 180 # default 6 hour
     env:
       TZ: Asia/Tokyo
     permissions:

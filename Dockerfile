@@ -1,13 +1,14 @@
 FROM ubuntu:22.04 as build-base
 
 ARG \
-    BUILD_USERNAME="builder" \
     DEBIAN_FRONTEND="noninteractive" \
-    OPENWRT_VERSION="v23.05.2"
+    \
+    BUILD_OPENWRT_VERSION="v23.05.2"
 
 LABEL version="0.0.1"
 LABEL description="A working container for building OpenWrt"
 LABEL repository="https://github.com/naa0yama/OpenWrt-FortiGate-50E-custom-image"
+
 
 #- -----------------------------------------------------------------------------
 #- - Base
@@ -47,10 +48,7 @@ RUN set -eux \
     bash \
     sudo \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && useradd -m "${BUILD_USERNAME}" \
-    && mkdir -p /etc/sudoers.d \
-    && echo "${BUILD_USERNAME} ALL=NOPASSWD: ALL" > "/etc/sudoers.d/${BUILD_USERNAME}"
+    && rm -rf /var/lib/apt/lists/*
 
 # Set git patching
 RUN set -eux \
@@ -75,9 +73,7 @@ RUN set -eux \
     && git config --global http.postBuffer 500M \
     && git config --global https.postBuffer 500M
 
-USER ${BUILD_USERNAME}
-WORKDIR "/home/${BUILD_USERNAME}"
-
+RUN mkdir -p /opt/openwrt
 
 #- -----------------------------------------------------------------------------
 #- - Preparing the source code
@@ -88,13 +84,12 @@ FROM build-base as runner
 
 # Download and update the sources
 RUN set -eux \
-    && git clone --verbose --progress --depth 1 --branch "${OPENWRT_VERSION}" \
-    https://github.com/openwrt/openwrt.git \
-    && cd openwrt
+    && git clone --verbose --progress --depth 1 --branch "${BUILD_OPENWRT_VERSION}" \
+    https://github.com/openwrt/openwrt.git -C /opt/openwrt
 
 # # # Update the feeds
-WORKDIR "/home/${BUILD_USERNAME}/openwrt"
 RUN set -eux \
+    && cd /opt/openwrt \
     && sed -i'' -e 's@git.openwrt.org/feed@github.com/openwrt@g' ./feeds.conf.default \
     && sed -i'' -e 's@git.openwrt.org/project@github.com/openwrt@g' ./feeds.conf.default \
     && cat ./feeds.conf.default \
@@ -106,9 +101,14 @@ RUN set -eux \
 #- -----------------------------------------------------------------------------
 FROM runner
 
+ARG \
+    BUILDMAKE_OPTIONS
+
 COPY --chown=${BUILD_USERNAME}:${BUILD_USERNAME} \
-    config/mvebu-cortexa9-fortinet_fg-50e.ini "/home/${BUILD_USERNAME}/openwrt/.config"
+    config/mvebu-cortexa9-fortinet_fg-50e.ini "/opt/openwrt/.config"
+
 RUN set -eux \
+    && cd /opt/openwrt \
     && make defconfig \
-    && make --directory ./ -j $(($(nproc)+1)) V=sc download world \
+    && make --directory ./ -j $(($(nproc)+1)) ${BUILDMAKE_OPTIONS} download world \
     && rm -rf bin/targets
