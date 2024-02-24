@@ -102,7 +102,7 @@ RUN set -eux \
 FROM runner
 
 ARG \
-    BUILD_MAKE_OPTIONS
+    BUILD_MAKE_OPTIONS=${BUILD_MAKE_OPTIONS:-V=s}
 
 COPY --chown=root:root \
     config/mvebu-cortexa9-fortinet_fg-50e.ini "/opt/openwrt/.config"
