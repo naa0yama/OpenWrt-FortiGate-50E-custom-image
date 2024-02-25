@@ -68,12 +68,13 @@ jobs:
           git tag
           git checkout v${{ inputs.version }}
 
-      - name: git clone openwrt/openwrt
+      - name: cache before ls -lah
         run: |
           set -eux
 
           pwd
           ls -lah
+          ls -lah openwrt
 
       - name: Cache dependencies
         id: cache-build
@@ -86,12 +87,13 @@ jobs:
 
           key: built-${{ inputs.version }}
 
-      - name: git clone openwrt/openwrt
+      - name: cache after ls -lah
         run: |
           set -eux
 
           pwd
           ls -lah
+          ls -lah openwrt
 
       - name: Cache hit check
         run: |
