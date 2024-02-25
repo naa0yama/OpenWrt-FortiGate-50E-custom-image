@@ -1,0 +1,75 @@
+name: Build system provisioning
+
+on:
+  workflow_dispatch:
+    inputs:
+      make_options:
+        required: true
+        default: "V=c"
+        description: |
+          make options. (default: "V=c")
+
+          [s]: stdout+stderr, [c]: commands, [w]: warnings/errors only
+        type: choice
+        options:
+        - "V=c"
+        - "V=w"
+        - "V=sc"
+        - "V=sw"
+
+jobs:
+  create-build-system:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180 # default 6 hour
+    env:
+      TZ: Asia/Tokyo
+    permissions:
+      packages: write
+
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+
+      - name: "get openwrt version from Dockerfile"
+        run: |
+          set -eux
+
+          OPENWRT_VERSION=$(grep -oP '(?<=OPENWRT_VERSION=").+(?=")' Dockerfile)
+          if [ -z "$OPENWRT_VERSION" ]; then
+            exit 1
+          fi
+
+          echo "OPENWRT_VERSION=${OPENWRT_VERSION}" >> $GITHUB_ENV
+
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ghcr.io/${{ github.repository }}/build-system
+          tags: |
+            # set latest tag for default branch
+            type=raw,value=latest,enable={{is_default_branch}}
+
+            # OpenWrt version tag
+            type=raw,value=${{ env.OPENWRT_VERSION }},enable={{is_default_branch}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5.1.0
+        env:
+          BUILD_MAKE_OPTIONS: ${{ inputs.make_options }}
+        with:
+          push: true
+          cache-from: type=gha,scope=build-system-${{ env.OPENWRT_VERSION }}
+          cache-to: type=gha,mode=max,scope=build-system-${{ env.OPENWRT_VERSION }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
