@@ -29,6 +29,7 @@ jobs:
     timeout-minutes: 180 # default 6 hour
     env:
       TZ: Asia/Tokyo
+      OPENWRT_VERSION: null
     permissions:
       packages: write
 
