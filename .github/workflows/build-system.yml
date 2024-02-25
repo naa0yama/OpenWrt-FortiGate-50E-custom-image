@@ -49,8 +49,6 @@ jobs:
           patch --version
           perl --version
           python3 --version
-          unzip --version
-          wget --version
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
