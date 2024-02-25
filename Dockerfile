@@ -121,6 +121,7 @@ RUN set -eux \
     && ls -la /usr/bin/python3*
 
 RUN set -eux \
+    && cd /opt/openwrt \
     && make defconfig
 
 # DO NOT set -e
