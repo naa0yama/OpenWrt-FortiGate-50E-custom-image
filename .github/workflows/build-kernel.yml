@@ -8,6 +8,7 @@ on:
         default: "23.05.2"
         description: OpenWrt version
         type: string
+
       make_options:
         required: true
         default: "V=c"
@@ -68,17 +69,14 @@ jobs:
           git checkout v${{ inputs.version }}
 
       - name: Cache dependencies
+        working-directory: openwrt
         id: cache-build
         uses: actions/cache@v4.0.0
         with:
           path: |
-            ./openwrt/bin/
-            ./openwrt/build_dir/
-            ./openwrt/dl/
-            ./openwrt/feeds/
-            ./openwrt/package/
-            ./openwrt/staging_dir/
-            ./openwrt/tmp/
+            build_dir/host
+            dl/
+            staging_dir/host
 
           key: built-${{ inputs.version }}
 
@@ -108,7 +106,6 @@ jobs:
           set -eux
 
           cd .
-          time make --directory ./ -j $(($(nproc)+1)) clean
           time make --directory ./ -j $(($(nproc)+1)) ${{ inputs.make_options }} download
           time make --directory ./ -j $(($(nproc)+1)) ${{ inputs.make_options }} world
 
@@ -121,6 +118,7 @@ jobs:
 
       - name: Pre-Release
         uses: softprops/action-gh-release@v1
+        working-directory: openwrt
         with:
           name: OpenWrt Custom ${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}
           tag_name: ${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}
@@ -133,4 +131,4 @@ jobs:
           draft: true
           prerelease: true
           files: |
-            openwrt/bin/targets/mvebu/cortexa9/openwrt-${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}-mvebu-cortexa9-fortinet_fg-50e.tar.gz
+            bin/targets/mvebu/cortexa9/openwrt-${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}-mvebu-cortexa9-fortinet_fg-50e.tar.gz
