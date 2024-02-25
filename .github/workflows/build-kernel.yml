@@ -90,7 +90,7 @@ jobs:
             ./openwrt/dl/
             ./openwrt/staging_dir/host
 
-          key: built-${{ inputs.version }}-${{ matrix.python-version }}-
+          key: built-${{ inputs.version }}-${{ matrix.platform }}-
 
       - name: cache after ls -lah
         run: |
