@@ -9,6 +9,7 @@ on:
 
   push:
     paths:
+      - .github/workflows/build-kernel.yml
       - config/*
 
   pull_request:
