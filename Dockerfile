@@ -111,8 +111,7 @@ RUN set -eux \
     && make defconfig
 
 RUN set -eux \
-    && make --directory ./ -j $(($(nproc)+1)) ${BUILD_MAKE_OPTIONS} download
+    && make --directory /opt/openwrt -j $(($(nproc)+1)) ${BUILD_MAKE_OPTIONS} download
 
 RUN set -eux \
-    && cd /opt/openwrt \
-    && make --directory ./ -j $(($(nproc)+1)) ${BUILD_MAKE_OPTIONS} world
+    && make --directory /opt/openwrt -j $(($(nproc)+1)) ${BUILD_MAKE_OPTIONS} world
