@@ -121,10 +121,13 @@ RUN set -eux \
     && ls -la /usr/bin/python3*
 
 RUN set -eux \
-    && cd /opt/openwrt \
-    && rm -f staging_dir/host/.prereq-build \
-    && make prereq \
     && make defconfig
+
+# DO NOT set -e
+RUN set -ux \
+    && cd /opt/openwrt \
+    && rm -fv staging_dir/host/.prereq-build \
+    && make prereq
 
 RUN set -eux \
     && make --directory /opt/openwrt -j $(($(nproc)+1)) ${BUILD_MAKE_OPTIONS} download
