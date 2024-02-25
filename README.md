@@ -267,31 +267,31 @@ make defconfig
 
 ### 大体の build 時間の推移
 
-|      min | exec time | func                                 |
-| -------: | --------: | :----------------------------------- |
-|        - |  16:17:03 | tools/flock/compile                  |
-|      03s |  16:17:06 | tools/download                       |
-|      11s |  16:17:17 | toolchain/download                   |
-|   02m52s |  16:20:09 | package/download                     |
-|      09s |  16:21:12 | target/download                      |
-|      12s |  16:21:21 | world                                |
-|       0s |  16:21:23 | tools/compile                        |
-|       0s |  16:21:23 | package/cleanup                      |
-| 1h12m07s |  17:33:30 | toolchain/compile                    |
-|   16m54s |  17:50:24 | target/compile                       |
-|   15m14s |  18:05:38 | buildinfo                            |
-|       0s |  18:05:38 | package/compile                      |
-|       2s |  18:05:40 | diffconfig buildversion feedsversion |
-|       3s |  18:05:43 | scripts/config/conf                  |
-|   41m44s |  18:47:27 | package/install                      |
-|      11s |  18:47:38 | target/install                       |
-|      54s |  18:48:32 | package/index                        |
-|      11s |  18:48:43 | json_overview_image_info             |
-|       2s |  18:48:45 | checksum                             |
-|          |           |                                      |
-| 2h31m00s |  18:48:47 | real                                 |
-| 8h32m00s |  18:48:47 | user                                 |
-|   55m00s |  18:48:47 | sys                                  |
+|      min | exec time | make func | func                                 |
+| -------: | --------: | :-------- | :----------------------------------- |
+|        - |  16:17:03 |           | tools/flock/compile                  |
+|      03s |  16:17:06 | download  | tools/download                       |
+|      11s |  16:17:17 | download  | toolchain/download                   |
+|   02m52s |  16:20:09 | download  | package/download                     |
+|      09s |  16:21:12 | download  | target/download                      |
+|      12s |  16:21:21 | world     | world                                |
+|       0s |  16:21:23 | compile   | tools/compile                        |
+|       0s |  16:21:23 | cleanup   | package/cleanup                      |
+| 1h12m07s |  17:33:30 | compile   | toolchain/compile                    |
+|   16m54s |  17:50:24 | compile   | target/compile                       |
+|   15m14s |  18:05:38 |           | buildinfo                            |
+|       0s |  18:05:38 | compile   | package/compile                      |
+|       2s |  18:05:40 |           | diffconfig buildversion feedsversion |
+|       3s |  18:05:43 |           | scripts/config/conf                  |
+|   41m44s |  18:47:27 | install   | package/install                      |
+|      11s |  18:47:38 | install   | target/install                       |
+|      54s |  18:48:32 |           | package/index                        |
+|      11s |  18:48:43 |           | json_overview_image_info             |
+|       2s |  18:48:45 |           | checksum                             |
+|          |           |           |                                      |
+| 2h31m00s |  18:48:47 |           | real                                 |
+| 8h32m00s |  18:48:47 |           | user                                 |
+|   55m00s |  18:48:47 |           | sys                                  |
 
 
 ### 容量
@@ -339,9 +339,7 @@ export OPENWRT_VERSION="23.05.2"
 
 wget "https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/targets/mvebu/cortexa9/openwrt-imagebuilder-${OPENWRT_VERSION}-mvebu-cortexa9.Linux-x86_64.tar.xz"
 
-mkdir -p buildtool && \
-tar -J -x -f openwrt-imagebuilder-*.tar.xz --strip-components 1 -C ./buildtool && \
-cd buildtool
+mkdir -p buildtool && tar -Jxf openwrt-imagebuilder-*.tar.xz --strip-components 1 -C ./buildtool && cd buildtool
 
 ```
 

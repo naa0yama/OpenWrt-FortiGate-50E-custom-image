@@ -2,15 +2,15 @@ name: Build system provisioning
 # Ref: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
 on:
-  push:
-    paths:
-      - .github/workflows/build-system.yml
-      - Dockerfile
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - closed
+  # push:
+  #   paths:
+  #     - .github/workflows/build-system.yml
+  #     - Dockerfile
+  # pull_request:
+  #   types:
+  #     - opened
+  #     - synchronize
+  #     - closed
   workflow_dispatch:
     inputs:
       make_options:
@@ -30,6 +30,11 @@ on:
 jobs:
   create-build-system:
     runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+      matrix:
+        platform:
+          - "fortinet_fg-50e"
     timeout-minutes: 180 # default 6 hour
     env:
       TZ: Asia/Tokyo

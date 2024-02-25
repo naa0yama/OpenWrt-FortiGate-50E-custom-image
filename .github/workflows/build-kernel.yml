@@ -1,6 +1,22 @@
-name: Build Kernel
+name: Build image
+# Ref: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
 on:
+  schedule:
+    # https://crontab.guru
+    # Cache 切れ回避
+    - cron: "0 02 * * 1,4" # daily 11:00 +0900 月,木
+
+  push:
+    paths:
+      - config/*
+
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - closed
+
   workflow_dispatch:
     inputs:
       version:
@@ -34,11 +50,13 @@ jobs:
     timeout-minutes: 180 # default 6 hour
     env:
       TZ: Asia/Tokyo
+      COMMIT_SHORT_SHA: null
     permissions:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4.1.1
+      - name: Checkout from repository
+        uses: actions/checkout@v4.1.1
 
       - name: Set short git commit SHA
         id: vars
@@ -73,32 +91,32 @@ jobs:
           git tag
           git checkout v${{ inputs.version }}
 
-      - name: cache before ls -lah
+      - name: Cache before
         run: |
           set -eux
 
           pwd
           ls -lah
           ls -lah openwrt
+          du -m openwrt | sort -nr
 
       - name: Cache dependencies
         id: cache-build
         uses: actions/cache@v4.0.0
         with:
           path: |
-            ./openwrt/build_dir/host
-            ./openwrt/dl/
-            ./openwrt/staging_dir/host
+            ./openwrt
 
           key: built-${{ inputs.version }}-${{ matrix.platform }}-
 
-      - name: cache after ls -lah
+      - name: Cache after
         run: |
           set -eux
 
           pwd
           ls -lah
           ls -lah openwrt
+          du -m openwrt | sort -nr
 
       - name: Cache hit check
         run: |
