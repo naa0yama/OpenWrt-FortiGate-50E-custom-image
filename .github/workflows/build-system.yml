@@ -85,6 +85,8 @@ jobs:
 
   notification:
     runs-on: ubuntu-latest
+    needs:
+      - create-build-system
     timeout-minutes: 5 # default 6 hour
     env:
       TZ: Asia/Tokyo
@@ -94,8 +96,6 @@ jobs:
     steps:
       - uses: actions/github-script@v7.0.1
         if: github.event.pull_request.merged != true && always()
-        needs:
-          - create-build-system
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
