@@ -43,15 +43,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 5
-      matrix:
-        platform:
-          - "fortinet_fg-50e"
     timeout-minutes: 180 # default 6 hour
     env:
       TZ: Asia/Tokyo
       COMMIT_SHORT_SHA: null
+      BUILD_OPENWRT_VERSION: ${{ inputs.version || '23.05.2' }}
     permissions:
       contents: write
 
@@ -90,7 +86,7 @@ jobs:
 
           git branch -a
           git tag
-          git checkout v${{ inputs.version }}
+          git checkout v${{ env.BUILD_OPENWRT_VERSION }}
 
       - name: Cache before
         run: |
@@ -108,7 +104,7 @@ jobs:
           path: |
             ./openwrt
 
-          key: built-${{ inputs.version }}-${{ matrix.platform }}-
+          key: built-${{ env.BUILD_OPENWRT_VERSION }}-fortinet_fg-50e
 
       - name: Cache after
         run: |
@@ -121,7 +117,7 @@ jobs:
 
       - name: Cache hit check
         run: |
-          echo "-->${{steps.cache-build.outputs.cache-hit}}<--"
+          echo "-->${{ steps.cache-build.outputs.cache-hit }}<--"
 
       - name: Update the feeds
         working-directory: openwrt
@@ -148,25 +144,49 @@ jobs:
           time make --directory ./ -j $(($(nproc)+1)) ${{ inputs.make_options }} download
           time make --directory ./ -j $(($(nproc)+1)) ${{ inputs.make_options }} world
 
+
+      - name: Generate Release note
+        run: |
+          set -eux
+
+          cat <<EOF> ${{ github.workspace }}-ReleaseNote.txt
+          * OpenWrt ${{ env.BUILD_OPENWRT_VERSION }}
+          * My repo Commit hash: `${{ env.COMMIT_SHORT_SHA }}`
+
+          This firmware was built by @naa0yama
+
+          ## sha256sums
+
+          ```bash
+          $(cat openwrt/bin/targets/mvebu/cortexa9/sha256sums | grep -v -e '\*packages\/')
+
+          ```
+
+          ## diffconfig
+
+          ```ini
+          $(cat config/mvebu-cortexa9-fortinet_fg-50e.ini)
+
+          ```
+
+          EOF
+
       - name: Archive artifacts
         working-directory: openwrt/bin/targets/mvebu/cortexa9
         run: |
           set -eux
 
-          tar -zcvf openwrt-${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}-mvebu-cortexa9-fortinet_fg-50e.tar.gz ./*
+          tar -zcvf openwrt-${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}-mvebu-cortexa9-fortinet_fg-50e.tar.gz ./*
 
       - name: Pre-Release
         uses: softprops/action-gh-release@v1
         with:
-          name: OpenWrt Custom ${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}
-          tag_name: ${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}
-          body: |
-            * OpenWrt ${{ inputs.version }}
-            * My repo Commit hash: `${{ env.COMMIT_SHORT_SHA }}`
-
-            This firmware was built by @naa0yama
-
+          name: OpenWrt Custom ${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}
+          tag_name: ${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}
+          body_path: ${{ github.workspace }}-ReleaseNote.txt
           draft: true
           prerelease: true
           files: |
-            ./openwrt/bin/targets/mvebu/cortexa9/openwrt-${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}-mvebu-cortexa9-fortinet_fg-50e.tar.gz
+            ./openwrt/bin/targets/mvebu/cortexa9/openwrt-${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}-mvebu-cortexa9-fortinet_fg-50e.tar.gz
+            ./openwrt/bin/targets/mvebu/cortexa9/openwrt-23.05.2-mvebu-cortexa9-fortinet_fg-50e-initramfs-kernel.bin
+            ./openwrt/bin/targets/mvebu/cortexa9/openwrt-23.05.2-mvebu-cortexa9-fortinet_fg-50e-squashfs-sysupgrade.bin
