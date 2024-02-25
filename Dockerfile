@@ -107,6 +107,7 @@ COPY --chown=root:root \
     config/mvebu-cortexa9-fortinet_fg-50e.ini "/opt/openwrt/.config"
 
 RUN set -eux \
+    && id \
     && bash --version \
     && bzip2 --version \
     && git --version \
