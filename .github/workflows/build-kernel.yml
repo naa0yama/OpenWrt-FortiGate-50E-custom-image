@@ -117,7 +117,6 @@ jobs:
 
       - name: Pre-Release
         uses: softprops/action-gh-release@v1
-        working-directory: openwrt
         with:
           name: OpenWrt Custom ${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}
           tag_name: ${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}
@@ -130,4 +129,4 @@ jobs:
           draft: true
           prerelease: true
           files: |
-            bin/targets/mvebu/cortexa9/openwrt-${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}-mvebu-cortexa9-fortinet_fg-50e.tar.gz
+            ./openwrt/bin/targets/mvebu/cortexa9/openwrt-${{ inputs.version }}-${{ env.COMMIT_SHORT_SHA }}-mvebu-cortexa9-fortinet_fg-50e.tar.gz
