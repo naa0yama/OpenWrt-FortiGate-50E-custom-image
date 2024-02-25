@@ -133,6 +133,6 @@ RUN set -ux \
 RUN set -eux \
     && make --directory /opt/openwrt -j $(($(nproc)+1)) ${BUILD_MAKE_OPTIONS} download
 
-# DO NOT set -e
-RUN set -ux \
+# DO NOT set -eu
+RUN set -x \
     && make --directory /opt/openwrt -j $(($(nproc)+1)) ${BUILD_MAKE_OPTIONS} world
