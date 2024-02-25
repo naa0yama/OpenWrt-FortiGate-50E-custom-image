@@ -117,7 +117,8 @@ RUN set -eux \
     && openssl version \
     && patch --version \
     && perl --version \
-    && python3 --version
+    && python3 --version \
+    && ls -la /usr/bin/python3*
 
 RUN set -eux \
     && cd /opt/openwrt \
