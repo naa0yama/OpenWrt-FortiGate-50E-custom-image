@@ -26,6 +26,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+      matrix:
+        platform:
+          - "fortinet_fg-50e"
     timeout-minutes: 180 # default 6 hour
     env:
       TZ: Asia/Tokyo
@@ -85,7 +90,7 @@ jobs:
             ./openwrt/dl/
             ./openwrt/staging_dir/host
 
-          key: built-${{ inputs.version }}
+          key: built-${{ inputs.version }}-${{ matrix.python-version }}
 
       - name: cache after ls -lah
         run: |
