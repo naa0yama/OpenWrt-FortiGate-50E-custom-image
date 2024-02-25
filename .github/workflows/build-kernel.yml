@@ -1,4 +1,4 @@
-name: Build Firmware
+name: Build Kernel
 
 on:
   workflow_dispatch:
@@ -111,8 +111,6 @@ jobs:
           time make --directory ./ -j $(($(nproc)+1)) clean
           time make --directory ./ -j $(($(nproc)+1)) ${{ inputs.make_options }} download
           time make --directory ./ -j $(($(nproc)+1)) ${{ inputs.make_options }} world
-          time make --directory ./ -j $(($(nproc)+1)) json_overview_image_info
-          time make --directory ./ -j $(($(nproc)+1)) checksum
 
       - name: Archive artifacts
         working-directory: openwrt/bin/targets/mvebu/cortexa9
