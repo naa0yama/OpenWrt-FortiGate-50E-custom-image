@@ -69,14 +69,13 @@ jobs:
           git checkout v${{ inputs.version }}
 
       - name: Cache dependencies
-        working-directory: openwrt
         id: cache-build
         uses: actions/cache@v4.0.0
         with:
           path: |
-            build_dir/host
-            dl/
-            staging_dir/host
+            ./openwrt/build_dir/host
+            ./openwrt/dl/
+            ./openwrt/staging_dir/host
 
           key: built-${{ inputs.version }}
 
