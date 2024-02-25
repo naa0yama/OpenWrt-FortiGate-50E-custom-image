@@ -130,6 +130,7 @@ RUN set -ux \
     && rm -fv staging_dir/host/.prereq-build \
     && make prereq
 
+ENV GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 RUN set -eux \
     && make --directory /opt/openwrt -j $(($(nproc)+1)) ${BUILD_MAKE_OPTIONS} download
 
