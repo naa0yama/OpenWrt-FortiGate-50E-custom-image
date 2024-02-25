@@ -122,6 +122,8 @@ RUN set -eux \
 
 RUN set -eux \
     && cd /opt/openwrt \
+    && rm -f staging_dir/host/.prereq-build \
+    && make prereq \
     && make defconfig
 
 RUN set -eux \
