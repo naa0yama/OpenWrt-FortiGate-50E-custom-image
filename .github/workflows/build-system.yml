@@ -1,6 +1,12 @@
 name: Build system provisioning
+# Ref: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
 on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - closed
   workflow_dispatch:
     inputs:
       make_options:
@@ -73,3 +79,29 @@ jobs:
           cache-to: type=gha,mode=max,scope=build-system-${{ env.OPENWRT_VERSION }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+
+  notification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5 # default 6 hour
+    env:
+      TZ: Asia/Tokyo
+    permissions:
+      pull-requests: write
+
+    steps:
+        if: github.event.pull_request.merged != true && always()
+      - uses: actions/github-script@v7.0.1
+        needs: ["create-build-system"]
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `
+            Notifications @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
