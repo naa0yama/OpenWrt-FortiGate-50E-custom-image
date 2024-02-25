@@ -68,6 +68,13 @@ jobs:
           git tag
           git checkout v${{ inputs.version }}
 
+      - name: git clone openwrt/openwrt
+        run: |
+          set -eux
+
+          pwd
+          ls -lah
+
       - name: Cache dependencies
         id: cache-build
         uses: actions/cache@v4.0.0
@@ -78,6 +85,13 @@ jobs:
             ./openwrt/staging_dir/host
 
           key: built-${{ inputs.version }}
+
+      - name: git clone openwrt/openwrt
+        run: |
+          set -eux
+
+          pwd
+          ls -lah
 
       - name: Cache hit check
         run: |
