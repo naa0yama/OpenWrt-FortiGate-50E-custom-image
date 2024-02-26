@@ -16,26 +16,26 @@ LABEL version="0.0.1"
 RUN set -eux \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
-    build-essential \
-    clang \
-    flex \
     bison \
+    build-essential \
+    ca-certificates \
+    clang \
+    file \
+    flex \
     g++ \
+    g++-multilib \
     gawk \
     gcc-multilib \
-    g++-multilib \
     gettext \
     git \
+    libcurl4-openssl-dev \
     libncurses-dev \
     libssl-dev \
     python3-distutils \
     rsync \
     unzip \
-    zlib1g-dev \
-    file \
     wget \
-    ca-certificates \
-    libcurl4-openssl-dev \
+    zlib1g-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -81,17 +81,16 @@ FROM build-base as openwrt-base
 
 # Download and update the sources
 RUN set -eux \
-    && git clone --verbose --progress https://github.com/openwrt/openwrt.git /opt/openwrt \
-    && cd /opt/openwrt \
-    && git branch -a \
-    && git tag \
-    && git checkout "${BUILD_OPENWRT_VERSION}"
+    && git clone --verbose --progress --depth 1 --branch "${BUILD_OPENWRT_VERSION}" \
+    https://github.com/openwrt/openwrt.git /opt/openwrt \
+    && cd /opt/openwrt
 
 # # # Update the feeds
 RUN set -eux \
     && cd /opt/openwrt \
-    && sed -i'' -e 's@git.openwrt.org/feed@github.com/openwrt@g' ./feeds.conf.default \
-    && sed -i'' -e 's@git.openwrt.org/project@github.com/openwrt@g' ./feeds.conf.default \
+    && sed -i'' \
+    -e 's@git.openwrt.org/feed@github.com/openwrt@g' \
+    -e 's@git.openwrt.org/project@github.com/openwrt@g' ./feeds.conf.default \
     && cat ./feeds.conf.default \
     && ./scripts/feeds update -a \
     && ./scripts/feeds install -a

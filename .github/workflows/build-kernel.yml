@@ -79,15 +79,6 @@ jobs:
           https://github.com/openwrt/openwrt.git
           cd openwrt
 
-      # - name: configure code version
-      #   working-directory: openwrt
-      #   run: |+
-      #     set -eux
-      #
-      #     git branch -a
-      #     git tag
-      #     git checkout v${{ env.BUILD_OPENWRT_VERSION }}
-
       - name: Cache before
         run: |+
           set -eux
