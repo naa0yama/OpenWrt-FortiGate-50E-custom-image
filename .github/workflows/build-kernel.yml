@@ -78,7 +78,6 @@ jobs:
           git clone --verbose --progress --depth 1 --branch "${{ env.BUILD_OPENWRT_VERSION }}" \
           https://github.com/openwrt/openwrt.git
           cd openwrt
-          git pull
 
       # - name: configure code version
       #   working-directory: openwrt
