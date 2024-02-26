@@ -158,14 +158,14 @@ jobs:
           ## sha256sums
 
           ```bash
-          $(cat openwrt/bin/targets/mvebu/cortexa9/sha256sums | grep -v -e '\*packages\/')
+          echo $(cat openwrt/bin/targets/mvebu/cortexa9/sha256sums | grep -v -e '\*packages\/')
 
           ```
 
           ## diffconfig
 
           ```ini
-          $(cat config/mvebu-cortexa9-fortinet_fg-50e.ini)
+          echo $(cat config/mvebu-cortexa9-fortinet_fg-50e.ini)
 
           ```
 
