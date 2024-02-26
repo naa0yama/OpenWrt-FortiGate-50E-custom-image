@@ -81,8 +81,11 @@ FROM build-base as openwrt-base
 
 # Download and update the sources
 RUN set -eux \
-    && git clone --verbose --progress --depth 1 --branch "${BUILD_OPENWRT_VERSION}" \
-    https://github.com/openwrt/openwrt.git /opt/openwrt
+    && git clone --verbose --progress https://github.com/openwrt/openwrt.git /opt/openwrt \
+    && cd /opt/openwrt \
+    && git branch -a \
+    && git tag \
+    && git checkout "${BUILD_OPENWRT_VERSION}"
 
 # # # Update the feeds
 RUN set -eux \
