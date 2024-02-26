@@ -146,7 +146,7 @@ jobs:
 
 
       - name: Generate Release note
-        run: |
+        run: |+
           set -eux
 
           cat <<EOF> ${{ github.workspace }}-ReleaseNote.txt
@@ -157,17 +157,17 @@ jobs:
 
           ## sha256sums
 
-          ```bash
+          \`\`\`bash
           echo $(cat openwrt/bin/targets/mvebu/cortexa9/sha256sums | grep -v -e '\*packages\/')
 
-          ```
+          \`\`\`
 
           ## diffconfig
 
-          ```ini
+          \`\`\`ini
           echo $(cat config/mvebu-cortexa9-fortinet_fg-50e.ini)
 
-          ```
+          \`\`\`
 
           EOF
 
