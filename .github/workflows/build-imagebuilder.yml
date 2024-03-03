@@ -81,7 +81,7 @@ jobs:
 
       - name: "Check outputs"
         run: |+
-          echo ${{ steps.LastKernelBuild.outputs }}
+          echo ${{ toJSON(steps.LastKernelBuild.outputs) }}
 
       - name: Installing dependencies
         run: |+
