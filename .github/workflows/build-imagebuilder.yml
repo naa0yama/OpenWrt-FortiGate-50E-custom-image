@@ -77,7 +77,7 @@ jobs:
               branch: 'main',
               status: 'success',
               per_page: 1,
-            }).workflow_runs[0].id;
+            });
 
       - name: "Check outputs"
         run: |+
