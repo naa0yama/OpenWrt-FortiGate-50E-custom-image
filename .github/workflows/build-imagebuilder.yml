@@ -85,8 +85,8 @@ jobs:
               per_page: 1,
             });
 
-            console.log(__listworkflowruns)
+            console.log(__listworkflowruns.workflow_runs.[0].id)
 
       - name: "Check outputs"
         run: |+
-          echo ${{ steps.LastKernelBuild.outputs }}
+          echo ${{ steps.LastKernelBuild.outputs}}
