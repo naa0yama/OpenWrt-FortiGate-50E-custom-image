@@ -1,4 +1,4 @@
-name: Build image
+name: Build Kernel
 # Ref: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
 on:
@@ -35,10 +35,10 @@ on:
           [s]: stdout+stderr, [c]: commands, [w]: warnings/errors only
         type: choice
         options:
-        - "V=c"
-        - "V=w"
-        - "V=sc"
-        - "V=sw"
+          - "V=c"
+          - "V=w"
+          - "V=sc"
+          - "V=sw"
 
 jobs:
   build:
