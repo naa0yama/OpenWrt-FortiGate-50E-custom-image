@@ -81,13 +81,12 @@ jobs:
 
       - name: "Check outputs"
         run: |+
-          echo toJson ${{ toJson(steps.LastKernelBuild.outputs.result) }}
-          echo IDtoJson ${{ fromJson(steps.LastKernelBuild.outputs.result).id }}
+          ${{ toJson(steps.LastKernelBuild.outputs.result) }} | jq
 
       - name: Download buildimage artifact
         uses: actions/download-artifact@v4
         with:
-          run-id: ${{ steps.LastKernelBuild.outputs.result.id }}
+          run-id: ${{ fromJson(steps.LastKernelBuild.outputs.result).id }}
           pattern: openwrt-imagebuilder-*
           merge-multiple: true
 
