@@ -116,7 +116,7 @@ jobs:
           set -eux
 
           mkdir -p imagebuilder
-          tar -Jxfv openwrt-imagebuilder-*.tar.xz -C ./imagebuilder
+          tar -Jxf openwrt-imagebuilder-*.tar.xz --strip-components 1 -C ./imagebuilder
 
       - name: Building image
         working-directory: imagebuilder
