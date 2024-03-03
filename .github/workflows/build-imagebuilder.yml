@@ -64,13 +64,6 @@ jobs:
       - name: Confirm git commit SHA output
         run: echo ${{ env.COMMIT_SHORT_SHA }}
 
-      - name: Installing dependencies
-        run: |+
-          sudo apt update
-          sudo apt install build-essential --no-install-recommends --no-install-suggests --yes \
-          clang flex bison g++ gawk gcc-multilib g++-multilib gettext git \
-          libncurses-dev libssl-dev python3-distutils rsync unzip zlib1g-dev file wget
-
       - uses: actions/github-script@v7.0.1
         id: LastKernelBuild
         with:
@@ -85,8 +78,15 @@ jobs:
               per_page: 1,
             });
 
-            console.log(__listworkflowruns.workflow_runs[0].id)
+            console.log(__listworkflowruns.workflow_runs['0'].id)
 
       - name: "Check outputs"
         run: |+
           echo ${{ steps.LastKernelBuild.outputs}}
+
+      - name: Installing dependencies
+        run: |+
+          sudo apt update
+          sudo apt install build-essential --no-install-recommends --no-install-suggests --yes \
+          clang flex bison g++ gawk gcc-multilib g++-multilib gettext git \
+          libncurses-dev libssl-dev python3-distutils rsync unzip zlib1g-dev file wget
