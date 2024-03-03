@@ -88,6 +88,7 @@ jobs:
         with:
           run-id: ${{ steps.LastKernelBuild.outputs.result.id }}
           pattern: openwrt-imagebuilder-*
+          merge-multiple: true
 
       - name: Display structure of downloaded files
         run: ls -R
