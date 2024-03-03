@@ -10,7 +10,7 @@ on:
   push:
     paths:
       - .github/workflows/build-kernel.yml
-      - config/*
+      - config/mvebu-cortexa9-fortinet_fg-50e.ini
 
   pull_request:
     types:

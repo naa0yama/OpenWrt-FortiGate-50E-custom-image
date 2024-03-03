@@ -10,6 +10,9 @@ on:
   push:
     paths:
       - .github/workflows/build-imagebuilder.yml
+      - config/imagebuilder/disable_services.txt
+      - config/imagebuilder/files.txt
+      - config/imagebuilder/packages_list.txt
 
   pull_request:
     types:
@@ -81,6 +84,8 @@ jobs:
 
       - name: "Check outputs"
         run: |+
+          set -eux
+
           echo ${{ toJson(steps.LastKernelBuild.outputs.result) }}
 
       - name: Download buildimage artifact
@@ -92,11 +97,35 @@ jobs:
           merge-multiple: true
 
       - name: Display structure of downloaded files
-        run: ls -R
+        run: |+
+          set -eux
 
-      # - name: Installing dependencies
-      #   run: |+
-      #     sudo apt update
-      #     sudo apt install build-essential --no-install-recommends --no-install-suggests --yes \
-      #     clang flex bison g++ gawk gcc-multilib g++-multilib gettext git \
-      #     libncurses-dev libssl-dev python3-distutils rsync unzip zlib1g-dev file wget
+          ls -R
+
+      - name: Installing dependencies
+        run: |+
+          set -eux
+
+          sudo apt update
+          sudo apt install --no-install-recommends --no-install-suggests --yes \
+          build-essential libncurses-dev zlib1g-dev gawk \
+          gettext libssl-dev xsltproc rsync wget  unzip python3 python3-distutils
+
+      - name: Unpack the archive
+        run: |+
+          set -eux
+
+          tar -Jxfv openwrt-imagebuilder-*.tar.xz -C ./imagebuilder
+
+      - name: Building image
+        working-directory: imagebuilder
+        run: |+
+          set -eux
+
+          make image \
+            PROFILE="fortinet_fg-50e" \
+            DISABLED_SERVICES="$(cat ../config/imagebuilder/disable_services.txt | tr '\n' ' ')" \
+            PACKAGES="$(cat ../config/imagebuilder/packages_list.txt | tr '\n' ' ')" \
+            FILES="$(cat ../config/imagebuilder/files.txt | tr '\n' ' ')"
+
+          ls -lah ./bin/targets/mvebu/cortexa9
