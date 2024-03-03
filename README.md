@@ -1,4 +1,5 @@
 # OpenWrt FortiGate 50E custom image
+
 OpenWrt custom image for Fortinet FortiGate 50E (FRRouting+VRF+veth+WireGuard)
 
 ## Firmware settings
@@ -292,7 +293,6 @@ make defconfig
 | 2h31m00s |  18:48:47 |           | real                                 |
 | 8h32m00s |  18:48:47 |           | user                                 |
 |   55m00s |  18:48:47 |           | sys                                  |
-
 
 ### 容量
 
