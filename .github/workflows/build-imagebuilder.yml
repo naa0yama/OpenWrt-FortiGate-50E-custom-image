@@ -87,6 +87,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           run-id: ${{ fromJson(steps.LastKernelBuild.outputs.result).id }}
+          pattern: openwrt-imagebuilder-*
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          merge-multiple: true
+
       - name: Display structure of downloaded files
         run: ls -R
 
