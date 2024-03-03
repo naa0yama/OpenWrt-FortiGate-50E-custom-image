@@ -85,7 +85,7 @@ jobs:
               per_page: 1,
             });
 
-            console.log(__listworkflowruns.workflow_runs)
+            console.log(__listworkflowruns)
 
       - name: "Check outputs"
         run: |+
