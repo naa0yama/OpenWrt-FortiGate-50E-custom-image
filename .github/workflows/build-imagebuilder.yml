@@ -89,4 +89,4 @@ jobs:
 
       - name: "Check outputs"
         run: |+
-          echo ${{ steps.LastKernelBuild.outputs.id }}
+          echo ${{ steps.LastKernelBuild.outputs }}
