@@ -76,11 +76,11 @@ jobs:
               branch: 'main',
               status: 'success',
               per_page: 1,
-            });
+            }).data.workflow_runs[0];
 
       - name: "Check outputs"
         run: |+
-          echo ${{ steps.LastKernelBuild.outputs.result }} | jq
+          echo ${{ toJson(steps.LastKernelBuild.outputs.result) }}
 
       - name: Installing dependencies
         run: |+
