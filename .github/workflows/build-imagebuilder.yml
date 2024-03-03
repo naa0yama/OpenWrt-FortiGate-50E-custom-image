@@ -81,7 +81,7 @@ jobs:
 
       - name: "Check outputs"
         run: |+
-          ${{ toJson(steps.LastKernelBuild.outputs.result) }}
+          echo ${{ toJson(steps.LastKernelBuild.outputs.result) }}
 
       - name: Download buildimage artifact
         uses: actions/download-artifact@v4
