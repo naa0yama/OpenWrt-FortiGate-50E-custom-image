@@ -80,7 +80,7 @@ jobs:
 
       - name: "Check outputs"
         run: |+
-          echo ${{ toJSON(steps.LastKernelBuild.outputs.result) }}
+          echo ${{ steps.LastKernelBuild.outputs.result }}
 
       - name: Installing dependencies
         run: |+
