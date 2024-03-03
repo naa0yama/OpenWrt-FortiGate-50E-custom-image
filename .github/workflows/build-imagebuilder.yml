@@ -86,7 +86,7 @@ jobs:
       - name: Download buildimage artifact
         uses: actions/download-artifact@v4
         with:
-          run-id: ${{ steps.LastKernelBuild.outputs.result.id }}
+          run-id: ${{ fromJSON(steps.LastKernelBuild.outputs.result.id) }}
           pattern: openwrt-imagebuilder-*
           merge-multiple: true
 
