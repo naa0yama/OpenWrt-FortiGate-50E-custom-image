@@ -76,7 +76,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |+
-            const __listworkflowruns = octokit.rest.actions.listWorkflowRuns({
+            const __listworkflowruns = github.rest.actions.listWorkflowRuns({
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'build-kernel.yml',
