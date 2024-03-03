@@ -185,9 +185,6 @@ jobs:
       - name: Upload to GitHub Actions Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: OpenWrt Custom ${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}
+          name: openwrt-imagebuilder-${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}
           path: |
-            ./openwrt/bin/targets/mvebu/cortexa9/openwrt-${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}-mvebu-cortexa9-fortinet_fg-50e.tar.gz
-            ./openwrt/bin/targets/mvebu/cortexa9/openwrt-*mvebu-cortexa9-fortinet_fg-50e-initramfs-kernel.bin
-            ./openwrt/bin/targets/mvebu/cortexa9/openwrt-*mvebu-cortexa9-fortinet_fg-50e-squashfs-sysupgrade.bin
             ./openwrt/bin/targets/mvebu/cortexa9/openwrt-imagebuilder-*mvebu-cortexa9.Linux-x86_64.tar.xz
