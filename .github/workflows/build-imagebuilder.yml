@@ -124,7 +124,7 @@ jobs:
       - name: set OpenWrt version
         run: |+
           set -eux
-          echo "BUILD_OPENWRT_VERSION=$(cat ./version.tag) \($(cat ./version.buildinfo)\)" >> $GITHUB_ENV
+          echo "BUILD_OPENWRT_VERSION=$(cat ./version.tag) ($(cat ./version.buildinfo))" >> $GITHUB_ENV
 
       - name: Building image
         working-directory: imagebuilder
@@ -146,7 +146,7 @@ jobs:
 
           cat <<EOF> ${{ github.workspace }}-ReleaseNote.txt
           * OpenWrt ${{ env.BUILD_OPENWRT_VERSION }}
-          * My repo Commit hash: `${{ env.COMMIT_SHORT_SHA }}`
+          * My repo Commit hash: \`${{ env.COMMIT_SHORT_SHA }}\`
 
           This firmware was built by @naa0yama
 
