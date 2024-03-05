@@ -122,6 +122,7 @@ jobs:
           cp -av ./packages ./imagebuilder/packages
 
       - name: set OpenWrt version
+        working-directory: imagebuilder
         run: |+
           set -eux
           echo "BUILD_OPENWRT_VERSION=$(cat ./bin/targets/mvebu/cortexa9/version.tag) \($(cat ./bin/targets/mvebu/cortexa9/version.buildinfo)\)" >> $GITHUB_ENV
@@ -140,6 +141,7 @@ jobs:
           ls -lah ./bin/targets/mvebu/cortexa9
 
       - name: Generate Release note
+        working-directory: imagebuilder
         run: |+
           set -eux
 
@@ -152,13 +154,13 @@ jobs:
           ## sha256sums
 
           \`\`\`bash
-          $(cat imagebuilder/bin/targets/mvebu/cortexa9/sha256sums | grep -v -e '\*packages\/')
+          $(cat ./bin/targets/mvebu/cortexa9/sha256sums | grep -v -e '\*packages\/')
 
           \`\`\`
 
           ## config
 
-          \`\`\`ini
+          \`\`\`bash
           make image \
             PROFILE="fortinet_fg-50e" \
             DISABLED_SERVICES=\"$(cat ../config/imagebuilder/disable_services.txt | tr '\n' ' ')\" \
