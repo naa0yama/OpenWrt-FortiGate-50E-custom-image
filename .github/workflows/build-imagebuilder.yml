@@ -118,6 +118,8 @@ jobs:
           mkdir -p imagebuilder
           tar -Jxf openwrt-imagebuilder-*.tar.xz --strip-components 1 -C ./imagebuilder
 
+          cp -av ./packages ./imagebuilder/packages
+
       - name: Building image
         working-directory: imagebuilder
         run: |+
