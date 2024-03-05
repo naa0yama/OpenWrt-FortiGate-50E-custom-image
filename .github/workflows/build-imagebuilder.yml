@@ -152,14 +152,18 @@ jobs:
           ## sha256sums
 
           \`\`\`bash
-          $(cat openwrt/bin/targets/mvebu/cortexa9/sha256sums | grep -v -e '\*packages\/')
+          $(cat imagebuilder/bin/targets/mvebu/cortexa9/sha256sums | grep -v -e '\*packages\/')
 
           \`\`\`
 
-          ## diffconfig
+          ## config
 
           \`\`\`ini
-          $(cat config/mvebu-cortexa9-fortinet_fg-50e.ini)
+          make image \
+            PROFILE="fortinet_fg-50e" \
+            DISABLED_SERVICES=\"$(cat ../config/imagebuilder/disable_services.txt | tr '\n' ' ')\" \
+            PACKAGES=\"$(cat ../config/imagebuilder/packages_list.txt | tr '\n' ' ')\" \
+            FILES=\"$(cat ../config/imagebuilder/files.txt | tr '\n' ' ')\"
 
           \`\`\`
 
@@ -175,5 +179,4 @@ jobs:
           prerelease: true
           files: |
             ./openwrt-*mvebu-cortexa9-fortinet_fg-50e-initramfs-kernel.bin
-            ./openwrt/bin/targets/mvebu/cortexa9/openwrt-*mvebu-cortexa9-fortinet_fg-50e-squashfs-sysupgrade.bin
-            ./openwrt/bin/targets/mvebu/cortexa9/openwrt-imagebuilder-*mvebu-cortexa9.Linux-x86_64.tar.xz
+            ./imagebuilder/bin/targets/mvebu/cortexa9/openwrt-*mvebu-cortexa9-fortinet_fg-50e-squashfs-sysupgrade.bin
