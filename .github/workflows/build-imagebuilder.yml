@@ -49,6 +49,7 @@ jobs:
     env:
       TZ: Asia/Tokyo
       COMMIT_SHORT_SHA: null
+      BUILD_OPENWRT_VERSION: null
     permissions:
       actions: read
       contents: write
@@ -118,7 +119,12 @@ jobs:
           mkdir -p imagebuilder
           tar -Jxf openwrt-imagebuilder-*.tar.xz --strip-components 1 -C ./imagebuilder
 
-          cp -av ./packages ./imagebuilder/packages
+          cp -av ./kmods ./imagebuilder/kmods
+
+      - name: set OpenWrt version
+        run: |+
+          set -eux
+          echo "BUILD_OPENWRT_VERSION=$(cat ./bin/targets/mvebu/cortexa9/version.tag) \($(cat ./bin/targets/mvebu/cortexa9/version.buildinfo)\)" >> $GITHUB_ENV
 
       - name: Building image
         working-directory: imagebuilder
@@ -132,3 +138,42 @@ jobs:
             FILES=\"$(cat ../config/imagebuilder/files.txt | tr '\n' ' ')\"
 
           ls -lah ./bin/targets/mvebu/cortexa9
+
+      - name: Generate Release note
+        run: |+
+          set -eux
+
+          cat <<EOF> ${{ github.workspace }}-ReleaseNote.txt
+          * OpenWrt ${{ env.BUILD_OPENWRT_VERSION }}
+          * My repo Commit hash: `${{ env.COMMIT_SHORT_SHA }}`
+
+          This firmware was built by @naa0yama
+
+          ## sha256sums
+
+          \`\`\`bash
+          $(cat openwrt/bin/targets/mvebu/cortexa9/sha256sums | grep -v -e '\*packages\/')
+
+          \`\`\`
+
+          ## diffconfig
+
+          \`\`\`ini
+          $(cat config/mvebu-cortexa9-fortinet_fg-50e.ini)
+
+          \`\`\`
+
+          EOF
+
+      - name: Pre-Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: OpenWrt Custom ${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}
+          tag_name: ${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}
+          body_path: ${{ github.workspace }}-ReleaseNote.txt
+          draft: true
+          prerelease: true
+          files: |
+            ./openwrt-*mvebu-cortexa9-fortinet_fg-50e-initramfs-kernel.bin
+            ./openwrt/bin/targets/mvebu/cortexa9/openwrt-*mvebu-cortexa9-fortinet_fg-50e-squashfs-sysupgrade.bin
+            ./openwrt/bin/targets/mvebu/cortexa9/openwrt-imagebuilder-*mvebu-cortexa9.Linux-x86_64.tar.xz

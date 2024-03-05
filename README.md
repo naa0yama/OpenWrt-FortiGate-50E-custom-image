@@ -30,8 +30,7 @@ Global build settings
         [*] L3 Master device support
 
 [*] Advanced configuration options (for developers)  --->
-    [*] Use ccache
-        (.ccache) Set ccache directory
+    [ ]   Automatic removal of build directories
 
 [*] Build the OpenWrt Image Builder
 [ ] Build the OpenWrt SDK
@@ -63,7 +62,6 @@ Global build settings
 
     Kernel modules  --->
         Network Support  --->
-            <*> kmod-tcp-bbr.................................. BBR TCP congestion control
             <*> kmod-veth................................... Virtual ethernet pair device
             <*> kmod-vrf........................... Virtual Routing and Forwarding (Lite)
             {*} kmod-vxlan................................... Native VXLAN Kernel support
@@ -173,46 +171,6 @@ Global build settings
 Packages
 
 ```bash
-cloudflared
-dmesg
-frr
-frr-bfdd
-frr-bgpd
-frr-libfrr
-frr-pythontools
-frr-staticd
-frr-vrrpd
-frr-vtysh
-frr-watchfrr
-frr-zebra
-htop
-https-dns-proxy
-iftop
-ip-full
-kmod-iptunnel
-kmod-tcp-bbr
-kmod-udptunnel4
-kmod-udptunnel6
-kmod-veth
-kmod-vrf
-kmod-vxlan
-kmod-wireguard
-luci-app-commands
-luci-app-https-dns-proxy
-luci-app-natmap
-luci-app-ttyd
-luci-proto-vxlan
-luci-proto-wireguard
-prometheus-node-exporter-lua
-prometheus-node-exporter-lua-nat_traffic
-prometheus-node-exporter-lua-netstat
-prometheus-node-exporter-lua-openwrt
-prometheus-node-exporter-lua-textfile
-prometheus-node-exporter-lua-uci_dhcp_host
-uhttpd-mod-lua
-vxlan
-wireguard-tools
-
 ```
 
 ## Local build
