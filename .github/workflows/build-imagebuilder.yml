@@ -119,7 +119,7 @@ jobs:
           mkdir -p imagebuilder
           tar -Jxf openwrt-imagebuilder-*.tar.xz --strip-components 1 -C ./imagebuilder
 
-          cp -av ./kmods ./imagebuilder/kmods
+          cp -av ./packages ./imagebuilder/packages
 
       - name: set OpenWrt version
         run: |+

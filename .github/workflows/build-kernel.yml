@@ -142,7 +142,6 @@ jobs:
         with:
           name: openwrt-imagebuilder-${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}
           path: |
-            ./openwrt/bin/targets/mvebu/cortexa9/kmods
             ./openwrt/bin/targets/mvebu/cortexa9/packages
             ./openwrt/bin/targets/mvebu/cortexa9/openwrt-*mvebu-cortexa9-fortinet_fg-50e-initramfs-kernel.bin
             ./openwrt/bin/targets/mvebu/cortexa9/openwrt-imagebuilder-*mvebu-cortexa9.Linux-x86_64.tar.xz
