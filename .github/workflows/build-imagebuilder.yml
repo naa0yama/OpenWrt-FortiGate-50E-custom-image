@@ -154,18 +154,21 @@ jobs:
           ## sha256sums
 
           \`\`\`bash
-          $(cat ./bin/targets/mvebu/cortexa9/sha256sums | grep -v -e '\*packages\/')
+          $( cat ./bin/targets/mvebu/cortexa9/sha256sums | grep -v -e '\*packages\/' )
 
           \`\`\`
 
           ## config
 
           \`\`\`bash
-          make image \
-            PROFILE="fortinet_fg-50e" \
-            DISABLED_SERVICES=\"$(cat ../config/imagebuilder/disable_services.txt | tr '\n' ' ')\" \
-            PACKAGES=\"$(cat ../config/imagebuilder/packages_list.txt | tr '\n' ' ')\" \
-            FILES=\"$(cat ../config/imagebuilder/files.txt | tr '\n' ' ')\"
+          # DISABLED_SERVICES
+          $( cat ../config/imagebuilder/disable_services.txt )
+
+          # PACKAGES
+          $( cat ../config/imagebuilder/packages_list.txt )
+
+          # FILES
+          $( cat ../config/imagebuilder/files.txt )
 
           \`\`\`
 
