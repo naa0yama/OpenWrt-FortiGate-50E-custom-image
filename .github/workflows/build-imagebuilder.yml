@@ -122,10 +122,9 @@ jobs:
           cp -av ./packages ./imagebuilder/packages
 
       - name: set OpenWrt version
-        working-directory: imagebuilder
         run: |+
           set -eux
-          echo "BUILD_OPENWRT_VERSION=$(cat ./bin/targets/mvebu/cortexa9/version.tag) \($(cat ./bin/targets/mvebu/cortexa9/version.buildinfo)\)" >> $GITHUB_ENV
+          echo "BUILD_OPENWRT_VERSION=$(cat ./version.tag) \($(cat ./version.buildinfo)\)" >> $GITHUB_ENV
 
       - name: Building image
         working-directory: imagebuilder
