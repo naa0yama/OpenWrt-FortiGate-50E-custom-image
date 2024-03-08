@@ -174,7 +174,7 @@ jobs:
           EOF
 
       - name: Pre-Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: OpenWrt Custom ${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}
           tag_name: ${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}
