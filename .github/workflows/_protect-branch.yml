@@ -50,3 +50,11 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.build-imagebuilder == 'true' }}
     uses: ./.github/workflows/build-imagebuilder.yml
+
+  build-kernel:
+    permissions:
+      actions: write
+
+    needs: changes
+    if: ${{ needs.changes.outputs.build-kernel == 'true' }}
+    uses: ./.github/workflows/build-kernel.yml

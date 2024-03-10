@@ -39,7 +39,7 @@ jobs:
       COMMIT_SHORT_SHA: null
       BUILD_OPENWRT_VERSION: ${{ inputs.version || 'v23.05.2' }}
     permissions:
-      contents: write
+      actions: write
 
     steps:
       - name: Checkout from repository
