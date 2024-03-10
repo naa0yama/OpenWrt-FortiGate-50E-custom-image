@@ -147,21 +147,22 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |+
-            const prereleases = await github.rest.repos.listReleases({
+            const __prereleases = await github.rest.repos.listReleases({
               owner: context.repo.owner,
               repo: context.repo.repo,
               per_page: 100,
             });
+            const prereleases = __prereleases.data
 
-            for (const property in prereleases.data) {
-              console.log('property' + JSON.stringify(property))
-              if ( property.draft == true && property.prerelease == true ) {
-                console.log('delte pre-release ' + property['id'] + '\t' + property['name'])
+            for (const index in prereleases) {
+              console.log('property' + JSON.stringify(prereleases[index]))
+              if ( prereleases[index].draft == true && prereleases[index].prerelease == true ) {
+                console.log('delte pre-release ' + prereleases[index]['id'] + '\t' + prereleases[index]['name'])
 
                 await github.rest.repos.deleteRelease({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  release_id: property['id'],
+                  release_id: prereleases[index]['id'],
                 });
               }
             }
