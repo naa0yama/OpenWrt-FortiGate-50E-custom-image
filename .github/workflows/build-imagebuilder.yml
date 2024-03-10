@@ -152,9 +152,10 @@ jobs:
               repo: context.repo.repo,
               per_page: 100,
             });
-            console.log('prereleases: ' + prereleases)
+            console.log('prereleases: ' + JSON.stringify(prereleases))
 
             for (const property in prereleases) {
+              console.log('property' + JSON.stringify(property))
               if ( property.draft == true && property.prerelease == true ) {
                 console.log('delte pre-release ' + property['id'] + '\t' + property['name'])
 
