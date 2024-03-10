@@ -5,24 +5,11 @@ on:
   schedule:
     # https://crontab.guru
     # Cache 切れ回避
-    - cron: "0 02 * * 1,4" # daily 11:00 +0900 月,木
+    - cron: "0 06 * * 1,4" # daily 14:00 +0900 月,木
 
-  pull_request:
-    types:
-      - closed
-      - opened
-      - reopened
-      - synchronize
-      - auto_merge_enabled
-    branches:
-      - 'main'
-    paths:
-      - .github/workflows/build-imagebuilder.yml
-      - config/imagebuilder/disable_services.txt
-      - config/imagebuilder/files.txt
-      - config/imagebuilder/packages_list.txt
-
-  workflow_dispatch:
+  pull_request: {}
+  workflow_call: {}
+  workflow_dispatch: {}
 
 jobs:
   ImageBuilder:
@@ -49,7 +36,8 @@ jobs:
       - name: Confirm git commit SHA output
         run: echo ${{ env.COMMIT_SHORT_SHA }}
 
-      - uses: actions/github-script@v7.0.1
+      - name: Get last kernel-build runs
+        uses: actions/github-script@v7.0.1
         id: LastKernelBuild
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -155,8 +143,30 @@ jobs:
 
           EOF
 
+      - name: Cleanup pre-releases
+        uses: actions/github-script@v7.0.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |+
+            const prereleases = await octokit.rest.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100,
+            });
+
+            let prerelease_id = []
+            for (const property in prereleases) {
+              if ( property.draft == true && property.prerelease == true ) {
+                prerelease_id.append(property['id'])
+              }
+            }
+
+            console.log(prerelease_id)
+            // return listWorkflowRuns.data.workflow_runs[0]
+
       - name: Pre-Release
         uses: softprops/action-gh-release@v2
+        if: github.event.pull_request.merged == true
         with:
           name: OpenWrt Custom ${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}
           tag_name: ${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}

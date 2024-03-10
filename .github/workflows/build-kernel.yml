@@ -7,19 +7,8 @@ on:
     # Cache 切れ回避
     - cron: "0 02 * * 1,4" # daily 11:00 +0900 月,木
 
-  pull_request:
-    types:
-      - closed
-      - opened
-      - reopened
-      - synchronize
-      - auto_merge_enabled
-    branches:
-      - 'main'
-    paths:
-      - .github/workflows/build-kernel.yml
-      - config/mvebu-cortexa9-fortinet_fg-50e.ini
-
+  pull_request: {}
+  workflow_call: {}
   workflow_dispatch:
     inputs:
       version:
