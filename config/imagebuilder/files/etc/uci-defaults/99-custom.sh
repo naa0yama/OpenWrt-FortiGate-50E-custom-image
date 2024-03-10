@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 cat << "EOF" > /etc/uci-defaults/99-custom
 uci -q batch << EOI
 uci set firewall.@defaults[0].flow_offloading='1'
