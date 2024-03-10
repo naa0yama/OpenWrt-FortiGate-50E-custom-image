@@ -151,10 +151,9 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               per_page: 100,
-            }).data;
-            console.log('prereleases: ' + JSON.stringify(prereleases))
+            });
 
-            for (const property in prereleases) {
+            for (const property in prereleases.['data']) {
               console.log('property' + JSON.stringify(property))
               if ( property.draft == true && property.prerelease == true ) {
                 console.log('delte pre-release ' + property['id'] + '\t' + property['name'])
