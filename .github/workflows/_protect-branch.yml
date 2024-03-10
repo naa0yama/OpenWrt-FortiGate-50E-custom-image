@@ -57,6 +57,5 @@ jobs:
 
     needs:
       - changes
-      - build-kernel
     if: ${{ needs.changes.outputs.build-imagebuilder == 'true' }}
     uses: ./.github/workflows/build-imagebuilder.yml
