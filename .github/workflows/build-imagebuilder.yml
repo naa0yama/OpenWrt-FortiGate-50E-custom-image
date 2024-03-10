@@ -64,16 +64,17 @@ jobs:
               per_page: 100,
             });
 
-            let prerelease_id = []
             for (const property in prereleases) {
               if ( property.draft == true && property.prerelease == true ) {
-                prerelease_id.append(property['id'])
+                console.log('delte pre-release ' + property['id'] + '\t' + property['name'])
+
+                github.rest.repos.deleteRelease({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  release_id: property['id'],
+                });
               }
             }
-
-            console.log(prerelease_id)
-            // return listWorkflowRuns.data.workflow_runs[0]
-
 
       - name: "Check outputs"
         run: |+
