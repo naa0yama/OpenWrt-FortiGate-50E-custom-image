@@ -104,7 +104,7 @@ jobs:
             PROFILE="fortinet_fg-50e" \
             DISABLED_SERVICES="$(grep -v -E '^(#|$)' ${{ github.workspace }}/config/imagebuilder/disable_services.txt | tr '\n' ' ')" \
             PACKAGES="$(grep -v -E '^(#|$)' ${{ github.workspace }}/config/imagebuilder/packages_list.txt | tr '\n' ' ')" \
-            FILES=\"${{ github.workspace }}/config/imagebuilder/files.cfg\"
+            FILES="${{ github.workspace }}/config/imagebuilder/files"
 
           ls -lah ./bin/targets/mvebu/cortexa9
 
@@ -136,7 +136,7 @@ jobs:
           $( cat ../config/imagebuilder/packages_list.txt )
 
           # FILES
-          $( cat ../config/imagebuilder/files.cfg )
+          $( grep -r -E '*' ../config/imagebuilder/files )
 
           \`\`\`
 
