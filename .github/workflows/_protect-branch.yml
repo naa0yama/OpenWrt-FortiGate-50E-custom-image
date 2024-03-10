@@ -15,25 +15,22 @@ on:
   workflow_dispatch:
 
 jobs:
-  runner:
-    name: Run ${{ matrix.workflow_name }}
+  changes:
+    name: Changes check
     runs-on: ubuntu-latest
     timeout-minutes: 5 # default 6 hour
     env:
       TZ: Asia/Tokyo
-    strategy:
-      max-parallel: 5
-      matrix:
-        workflow_name:
-          - build-imagebuilder
-          - build-kernel
+    outputs:
+      build-imagebuilder: ${{ steps.filter.outputs.build-imagebuilder }}
+      build-kernel: ${{ steps.filter.outputs.build-kernel }}
 
     steps:
       - name: Checkout from repository
         uses: actions/checkout@v4.1.1
 
       - uses: dorny/paths-filter@v2.11.1
-        id: changes
+        id: filter
         with:
           filters: |
             build-imagebuilder:
@@ -45,10 +42,7 @@ jobs:
               - '.github/workflows/build-kernel.yml'
               - 'config/mvebu-cortexa9-fortinet_fg-50e.ini'
 
-      - name: Run build imagebuilder
-        uses: ./.github/workflows/build-imagebuilder.yml
-        if: steps.changes.outputs.${{ matrix.workflow_name }} == 'true'
-
-      - name: Run build kernel
-        uses: ./.github/workflows/build-imagebuilder.yml
-        if: steps.changes.outputs.${{ matrix.workflow_name }} == 'true'
+  build-imagebuilder:
+    needs: changes
+    if: ${{ needs.changes.outputs.build-imagebuilder == 'true' }}
+    uses: ./.github/workflows/build-imagebuilder.yml
