@@ -21,9 +21,6 @@ jobs:
     timeout-minutes: 5 # default 6 hour
     env:
       TZ: Asia/Tokyo
-    permissions:
-      actions: read
-      contents: write
     outputs:
       build-imagebuilder: ${{ steps.filter.outputs.build-imagebuilder }}
       build-kernel: ${{ steps.filter.outputs.build-kernel }}
@@ -46,6 +43,10 @@ jobs:
               - 'config/mvebu-cortexa9-fortinet_fg-50e.ini'
 
   build-imagebuilder:
+    permissions:
+      actions: read
+      contents: write
+
     needs: changes
     if: ${{ needs.changes.outputs.build-imagebuilder == 'true' }}
     uses: ./.github/workflows/build-imagebuilder.yml
