@@ -1,4 +1,4 @@
-name: Protect Branch CI
+name: 00 Protect Branch CI
 # Ref: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
 on:
@@ -42,7 +42,21 @@ jobs:
               - '.github/workflows/build-kernel.yml'
               - 'config/mvebu-cortexa9-fortinet_fg-50e.ini'
 
-  build-imagebuilder:
+  build-kernel:
+    permissions:
+      actions: write
+
     needs: changes
+    if: ${{ needs.changes.outputs.build-kernel == 'true' }}
+    uses: ./.github/workflows/build-kernel.yml
+
+  build-imagebuilder:
+    permissions:
+      actions: read
+      contents: write
+
+    needs:
+      - changes
+      - build-kernel
     if: ${{ needs.changes.outputs.build-imagebuilder == 'true' }}
     uses: ./.github/workflows/build-imagebuilder.yml
