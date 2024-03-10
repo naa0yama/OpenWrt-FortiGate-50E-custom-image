@@ -21,6 +21,9 @@ jobs:
     timeout-minutes: 5 # default 6 hour
     env:
       TZ: Asia/Tokyo
+    permissions:
+      actions: read
+      contents: write
     outputs:
       build-imagebuilder: ${{ steps.filter.outputs.build-imagebuilder }}
       build-kernel: ${{ steps.filter.outputs.build-kernel }}
