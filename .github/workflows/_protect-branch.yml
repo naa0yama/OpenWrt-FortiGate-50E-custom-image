@@ -1,4 +1,4 @@
-name: _Protect Branch CI
+name: 00 Protect Branch CI
 # Ref: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
 on:
