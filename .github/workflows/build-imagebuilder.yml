@@ -102,9 +102,9 @@ jobs:
 
           make image \
             PROFILE="fortinet_fg-50e" \
-            DISABLED_SERVICES="$(grep -v -E '^(#|$)' ../config/imagebuilder/disable_services.txt | tr '\n' ' ')" \
-            PACKAGES="$(grep -v -E '^(#|$)' ../config/imagebuilder/packages_list.txt | tr '\n' ' ')" \
-            FILES=\"../config/imagebuilder/files.cfg\"
+            DISABLED_SERVICES="$(grep -v -E '^(#|$)' ${{ github.workspace }}/config/imagebuilder/disable_services.txt | tr '\n' ' ')" \
+            PACKAGES="$(grep -v -E '^(#|$)' ${{ github.workspace }}/config/imagebuilder/packages_list.txt | tr '\n' ' ')" \
+            FILES=\"${{ github.workspace }}/config/imagebuilder/files.cfg\"
 
           ls -lah ./bin/targets/mvebu/cortexa9
 
@@ -151,7 +151,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               per_page: 100,
-            });
+            }).data;
             console.log('prereleases: ' + JSON.stringify(prereleases))
 
             for (const property in prereleases) {
@@ -159,7 +159,7 @@ jobs:
               if ( property.draft == true && property.prerelease == true ) {
                 console.log('delte pre-release ' + property['id'] + '\t' + property['name'])
 
-                github.rest.repos.deleteRelease({
+                await github.rest.repos.deleteRelease({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   release_id: property['id'],
