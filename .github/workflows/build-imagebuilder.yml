@@ -115,8 +115,8 @@ jobs:
 
           make image \
             PROFILE="fortinet_fg-50e" \
-            DISABLED_SERVICES=\"$(cat ../config/imagebuilder/disable_services.txt | tr '\n' ' ')\" \
-            PACKAGES=\"$(grep -v -E '^(#|$)' ../config/imagebuilder/packages_list.txt | tr '\n' ' ')\" \
+            DISABLED_SERVICES="$(grep -v -E '^(#|$)' ../config/imagebuilder/disable_services.txt | tr '\n' ' ')" \
+            PACKAGES="$(grep -v -E '^(#|$)' ../config/imagebuilder/packages_list.txt | tr '\n' ' ')" \
             FILES=\"../config/imagebuilder/files.txt\"
 
           ls -lah ./bin/targets/mvebu/cortexa9
