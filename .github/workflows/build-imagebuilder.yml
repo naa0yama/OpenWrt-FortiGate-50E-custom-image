@@ -136,7 +136,7 @@ jobs:
           $( cat ../config/imagebuilder/packages_list.txt )
 
           # FILES
-          $( grep -r -E '*' ../config/imagebuilder/files )
+          $( grep -r -E '*' ../config/imagebuilder/files | sed -e 's@\.\./config/imagebuilder/files@@g' )
 
           \`\`\`
 
@@ -155,7 +155,6 @@ jobs:
             const prereleases = __prereleases.data
 
             for (const index in prereleases) {
-              console.log('property' + JSON.stringify(prereleases[index]))
               if ( prereleases[index].draft == true && prereleases[index].prerelease == true ) {
                 console.log('delte pre-release ' + prereleases[index]['id'] + '\t' + prereleases[index]['name'])
 
