@@ -1,2 +1,3 @@
 irqbalance
-htop sysstat
+htop
+sysstat

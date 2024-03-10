@@ -19,6 +19,13 @@ on:
       - opened
       - synchronize
       - closed
+    branches:
+      - 'main'
+    paths:
+      - .github/workflows/build-imagebuilder.yml
+      - config/imagebuilder/disable_services.txt
+      - config/imagebuilder/files.txt
+      - config/imagebuilder/packages_list.txt
 
   workflow_dispatch:
     inputs:
@@ -134,8 +141,8 @@ jobs:
           make image \
             PROFILE="fortinet_fg-50e" \
             DISABLED_SERVICES=\"$(cat ../config/imagebuilder/disable_services.txt | tr '\n' ' ')\" \
-            PACKAGES=\"$(cat ../config/imagebuilder/packages_list.txt | tr '\n' ' ')\" \
-            FILES=\"$(cat ../config/imagebuilder/files.txt | tr '\n' ' ')\"
+            PACKAGES=\"$(cat ../config/imagebuilder/packages_list.txt | grep -v E '^(#|$)' | tr '\n' ' ')\" \
+            FILES=\"../config/imagebuilder/files.txt\"
 
           ls -lah ./bin/targets/mvebu/cortexa9
 
