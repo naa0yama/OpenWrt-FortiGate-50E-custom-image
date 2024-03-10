@@ -15,8 +15,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  path-filter:
-    name: path-filter
+  runner:
+    name: Run ${{ matrix.workflow_name }}
     runs-on: ubuntu-latest
     timeout-minutes: 5 # default 6 hour
     env:
@@ -46,9 +46,9 @@ jobs:
               - 'config/mvebu-cortexa9-fortinet_fg-50e.ini'
 
       - name: Run build imagebuilder
-        uses: ./.github/workflows/build-imagebuilder.yml
+        uses: ${{ context.repo.owner }}/${{ context.repo.repo }}/.github/workflows/build-imagebuilder.yml@main
         if: steps.changes.outputs.${{ matrix.workflow_name }} == 'true'
 
       - name: Run build kernel
-        uses: ./.github/workflows/build-kernel.yml
+        uses: ${{ context.repo.owner }}/${{ context.repo.repo }}/.github/workflows/build-imagebuilder.yml@main
         if: steps.changes.outputs.${{ matrix.workflow_name }} == 'true'
