@@ -1,0 +1,54 @@
+name: Protect Branch CI
+# Ref: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+
+on:
+  pull_request:
+    types:
+      - closed
+      - opened
+      - reopened
+      - synchronize
+      - auto_merge_enabled
+    branches:
+      - 'main'
+
+  workflow_dispatch:
+
+jobs:
+  runner:
+    name: Run ${{ matrix.workflow_name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5 # default 6 hour
+    env:
+      TZ: Asia/Tokyo
+    strategy:
+      max-parallel: 5
+      matrix:
+        workflow_name:
+          - build-imagebuilder
+          - build-kernel
+
+    steps:
+      - name: Checkout from repository
+        uses: actions/checkout@v4.1.1
+
+      - uses: dorny/paths-filter@v2.11.1
+        id: changes
+        with:
+          filters: |
+            build-imagebuilder:
+              - '.github/workflows/build-imagebuilder.yml'
+              - 'config/imagebuilder/disable_services.txt'
+              - 'config/imagebuilder/files.txt'
+              - 'config/imagebuilder/packages_list.txt'
+            build-kernel:
+              - '.github/workflows/build-kernel.yml'
+              - 'config/mvebu-cortexa9-fortinet_fg-50e.ini'
+
+      - name: Run build imagebuilder
+        uses: ./.github/workflows/build-imagebuilder.yml
+        if: steps.changes.outputs.${{ matrix.workflow_name }} == 'true'
+
+      - name: Run build kernel
+        uses: ./.github/workflows/build-imagebuilder.yml
+        if: steps.changes.outputs.${{ matrix.workflow_name }} == 'true'

@@ -5,42 +5,10 @@ on:
   schedule:
     # https://crontab.guru
     # Cache 切れ回避
-    - cron: "0 02 * * 1,4" # daily 11:00 +0900 月,木
+    - cron: "0 06 * * 1,4" # daily 14:00 +0900 月,木
 
-  push:
-    paths:
-      - .github/workflows/build-imagebuilder.yml
-      - config/imagebuilder/disable_services.txt
-      - config/imagebuilder/files.txt
-      - config/imagebuilder/packages_list.txt
-
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - closed
-
-  workflow_dispatch:
-    inputs:
-      version:
-        required: true
-        default: "v23.05.2"
-        description: OpenWrt version
-        type: string
-
-      make_options:
-        required: true
-        default: "V=c"
-        description: |
-          make options. (default: "V=c")
-
-          [s]: stdout+stderr, [c]: commands, [w]: warnings/errors only
-        type: choice
-        options:
-          - "V=c"
-          - "V=w"
-          - "V=sc"
-          - "V=sw"
+  workflow_call: {}
+  workflow_dispatch: {}
 
 jobs:
   ImageBuilder:
@@ -67,7 +35,8 @@ jobs:
       - name: Confirm git commit SHA output
         run: echo ${{ env.COMMIT_SHORT_SHA }}
 
-      - uses: actions/github-script@v7.0.1
+      - name: Get last kernel-build runs
+        uses: actions/github-script@v7.0.1
         id: LastKernelBuild
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -121,7 +90,7 @@ jobs:
 
           cp -av ./packages ./imagebuilder/packages
 
-      - name: set OpenWrt version
+      - name: Set OpenWrt version
         run: |+
           set -eux
           echo "BUILD_OPENWRT_VERSION=$(cat ./version.tag) ($(cat ./version.buildinfo))" >> $GITHUB_ENV
@@ -133,9 +102,9 @@ jobs:
 
           make image \
             PROFILE="fortinet_fg-50e" \
-            DISABLED_SERVICES=\"$(cat ../config/imagebuilder/disable_services.txt | tr '\n' ' ')\" \
-            PACKAGES=\"$(cat ../config/imagebuilder/packages_list.txt | tr '\n' ' ')\" \
-            FILES=\"$(cat ../config/imagebuilder/files.txt | tr '\n' ' ')\"
+            DISABLED_SERVICES="$(grep -v -E '^(#|$)' ../config/imagebuilder/disable_services.txt | tr '\n' ' ')" \
+            PACKAGES="$(grep -v -E '^(#|$)' ../config/imagebuilder/packages_list.txt | tr '\n' ' ')" \
+            FILES=\"../config/imagebuilder/files.txt\"
 
           ls -lah ./bin/targets/mvebu/cortexa9
 
@@ -173,8 +142,35 @@ jobs:
 
           EOF
 
+      - name: Cleanup pre-releases
+        uses: actions/github-script@v7.0.1
+        if: github.event.pull_request.merged == true
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |+
+            const prereleases = await github.rest.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100,
+            });
+
+            for (const property in prereleases) {
+              if ( property.draft == true && property.prerelease == true ) {
+                console.log('delte pre-release ' + property['id'] + '\t' + property['name'])
+
+                github.rest.repos.deleteRelease({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  release_id: property['id'],
+                });
+              }
+            }
+
+            console.log('end run')
+
       - name: Pre-Release
         uses: softprops/action-gh-release@v2
+        if: github.event.pull_request.merged == true
         with:
           name: OpenWrt Custom ${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}
           tag_name: ${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}
