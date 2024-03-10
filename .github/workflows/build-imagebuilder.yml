@@ -52,29 +52,6 @@ jobs:
 
             return listWorkflowRuns.data.workflow_runs[0]
 
-      - name: Cleanup pre-releases
-        uses: actions/github-script@v7.0.1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |+
-            const prereleases = await github.rest.repos.listReleases({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              per_page: 100,
-            });
-
-            for (const property in prereleases) {
-              if ( property.draft == true && property.prerelease == true ) {
-                console.log('delte pre-release ' + property['id'] + '\t' + property['name'])
-
-                github.rest.repos.deleteRelease({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  release_id: property['id'],
-                });
-              }
-            }
-
       - name: "Check outputs"
         run: |+
           set -eux
@@ -113,18 +90,10 @@ jobs:
 
           cp -av ./packages ./imagebuilder/packages
 
-      - name: set OpenWrt version
+      - name: Set OpenWrt version
         run: |+
           set -eux
           echo "BUILD_OPENWRT_VERSION=$(cat ./version.tag) ($(cat ./version.buildinfo))" >> $GITHUB_ENV
-
-      - name: Update the feeds
-        working-directory: imagebuilder
-        run: |+
-          set -eux
-
-          ./scripts/feeds update -a
-          ./scripts/feeds install -a
 
       - name: Building image
         working-directory: imagebuilder
@@ -172,6 +141,32 @@ jobs:
           \`\`\`
 
           EOF
+
+      - name: Cleanup pre-releases
+        uses: actions/github-script@v7.0.1
+        if: github.event.pull_request.merged == true
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |+
+            const prereleases = await github.rest.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100,
+            });
+
+            for (const property in prereleases) {
+              if ( property.draft == true && property.prerelease == true ) {
+                console.log('delte pre-release ' + property['id'] + '\t' + property['name'])
+
+                github.rest.repos.deleteRelease({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  release_id: property['id'],
+                });
+              }
+            }
+
+            console.log('end run')
 
       - name: Pre-Release
         uses: softprops/action-gh-release@v2
