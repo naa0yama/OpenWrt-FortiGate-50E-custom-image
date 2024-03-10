@@ -104,7 +104,7 @@ jobs:
             PROFILE="fortinet_fg-50e" \
             DISABLED_SERVICES="$(grep -v -E '^(#|$)' ../config/imagebuilder/disable_services.txt | tr '\n' ' ')" \
             PACKAGES="$(grep -v -E '^(#|$)' ../config/imagebuilder/packages_list.txt | tr '\n' ' ')" \
-            FILES=\"../config/imagebuilder/files.txt\"
+            FILES=\"../config/imagebuilder/files.cfg\"
 
           ls -lah ./bin/targets/mvebu/cortexa9
 
@@ -136,7 +136,7 @@ jobs:
           $( cat ../config/imagebuilder/packages_list.txt )
 
           # FILES
-          $( cat ../config/imagebuilder/files.txt )
+          $( cat ../config/imagebuilder/files.cfg )
 
           \`\`\`
 
