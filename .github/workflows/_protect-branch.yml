@@ -46,9 +46,9 @@ jobs:
               - 'config/mvebu-cortexa9-fortinet_fg-50e.ini'
 
       - name: Run build imagebuilder
-        uses: ${{ context.repo.owner }}/${{ context.repo.repo }}/.github/workflows/build-imagebuilder.yml@main
+        uses: ./.github/workflows/build-imagebuilder.yml
         if: steps.changes.outputs.${{ matrix.workflow_name }} == 'true'
 
       - name: Run build kernel
-        uses: ${{ context.repo.owner }}/${{ context.repo.repo }}/.github/workflows/build-imagebuilder.yml@main
+        uses: ./.github/workflows/build-imagebuilder.yml
         if: steps.changes.outputs.${{ matrix.workflow_name }} == 'true'
