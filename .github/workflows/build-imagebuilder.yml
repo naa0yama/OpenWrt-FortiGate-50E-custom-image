@@ -152,6 +152,7 @@ jobs:
               repo: context.repo.repo,
               per_page: 100,
             });
+            console.log('prereleases: ' + prereleases)
 
             for (const property in prereleases) {
               if ( property.draft == true && property.prerelease == true ) {
