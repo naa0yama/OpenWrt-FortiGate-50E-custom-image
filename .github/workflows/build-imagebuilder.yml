@@ -95,6 +95,16 @@ jobs:
           set -eux
           echo "BUILD_OPENWRT_VERSION=$(cat ./version.tag) ($(cat ./version.buildinfo))" >> $GITHUB_ENV
 
+      - name: Download dnsmasq-full patch version
+        working-directory: imagebuilder
+        run: |+
+          set -eux
+
+          cd ./packages
+          wget https://mirror-03.infra.openwrt.org/snapshots/packages/arm_cortex-a9_vfpv3-d16/base/dnsmasq-full_2.90-1_arm_cortex-a9_vfpv3-d16.ipk
+          wget https://mirror-03.infra.openwrt.org/snapshots/packages/arm_cortex-a9_vfpv3-d16/base/libubox20240126_2024-01-26-c1be5057-1_arm_cortex-a9_vfpv3-d16.ipk
+          wget https://mirror-03.infra.openwrt.org/snapshots/packages/arm_cortex-a9_vfpv3-d16/base/libubus20231128_2023-11-28-f84eb599-1_arm_cortex-a9_vfpv3-d16.ipk
+
       - name: Building image
         working-directory: imagebuilder
         run: |+
