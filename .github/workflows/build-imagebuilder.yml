@@ -119,8 +119,8 @@ jobs:
 
           ls -lah ./bin/targets/mvebu/cortexa9
 
-          mv -v ./imagebuilder/bin/targets/mvebu/cortexa9/openwrt-${BUILD_OPENWRT_TAG#v}-mvebu-cortexa9-fortinet_fg-50e-squashfs-sysupgrade.bin \
-            ./imagebuilder/bin/targets/mvebu/cortexa9/openwrt-${BUILD_OPENWRT_TAG#v}-${COMMIT_SHORT_SHA}-mvebu-cortexa9-fortinet_fg-50e-squashfs-sysupgrade.bin
+          mv -v ./bin/targets/mvebu/cortexa9/openwrt-${BUILD_OPENWRT_TAG#v}-mvebu-cortexa9-fortinet_fg-50e-squashfs-sysupgrade.bin \
+            ./bin/targets/mvebu/cortexa9/openwrt-${BUILD_OPENWRT_TAG#v}-${COMMIT_SHORT_SHA}-mvebu-cortexa9-fortinet_fg-50e-squashfs-sysupgrade.bin
 
       - name: Generate Release note
         working-directory: imagebuilder
