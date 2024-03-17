@@ -94,6 +94,17 @@ jobs:
         run: |+
           set -eux
           echo "BUILD_OPENWRT_VERSION=$(cat ./version.tag) ($(cat ./version.buildinfo))" >> $GITHUB_ENV
+          echo "BUILD_OPENWRT_TAG=$(cat ./version.tag)" >> $GITHUB_ENV
+
+      - name: Download dnsmasq-full patch version
+        working-directory: imagebuilder
+        run: |+
+          set -eux
+
+          cd ./packages
+          wget https://mirror-03.infra.openwrt.org/snapshots/packages/arm_cortex-a9_vfpv3-d16/base/dnsmasq-full_2.90-1_arm_cortex-a9_vfpv3-d16.ipk
+          wget https://mirror-03.infra.openwrt.org/snapshots/packages/arm_cortex-a9_vfpv3-d16/base/libubox20240126_2024-01-26-c1be5057-1_arm_cortex-a9_vfpv3-d16.ipk
+          wget https://mirror-03.infra.openwrt.org/snapshots/packages/arm_cortex-a9_vfpv3-d16/base/libubus20231128_2023-11-28-f84eb599-1_arm_cortex-a9_vfpv3-d16.ipk
 
       - name: Building image
         working-directory: imagebuilder
@@ -102,11 +113,14 @@ jobs:
 
           make image \
             PROFILE="fortinet_fg-50e" \
-            DISABLED_SERVICES="$(grep -v -E '^(#|$)' ../config/imagebuilder/disable_services.txt | tr '\n' ' ')" \
-            PACKAGES="$(grep -v -E '^(#|$)' ../config/imagebuilder/packages_list.txt | tr '\n' ' ')" \
-            FILES=\"../config/imagebuilder/files.cfg\"
+            DISABLED_SERVICES="$(grep -v -E '^(#|$)' ${{ github.workspace }}/config/imagebuilder/disable_services.txt | tr '\n' ' ')" \
+            PACKAGES="$(grep -v -E '^(#|$)' ${{ github.workspace }}/config/imagebuilder/packages_list.txt | tr '\n' ' ')" \
+            FILES="${{ github.workspace }}/config/imagebuilder/files"
 
           ls -lah ./bin/targets/mvebu/cortexa9
+
+          mv -v ./bin/targets/mvebu/cortexa9/openwrt-${BUILD_OPENWRT_TAG#v}-mvebu-cortexa9-fortinet_fg-50e-squashfs-sysupgrade.bin \
+            ./bin/targets/mvebu/cortexa9/openwrt-${BUILD_OPENWRT_TAG#v}-${COMMIT_SHORT_SHA}-mvebu-cortexa9-fortinet_fg-50e-squashfs-sysupgrade.bin
 
       - name: Generate Release note
         working-directory: imagebuilder
@@ -115,7 +129,7 @@ jobs:
 
           cat <<EOF> ${{ github.workspace }}-ReleaseNote.txt
           * OpenWrt ${{ env.BUILD_OPENWRT_VERSION }}
-          * My repo Commit hash: \`${{ env.COMMIT_SHORT_SHA }}\`
+          * My repo Commit hash: ${{ github.sha }}
 
           This firmware was built by @naa0yama
 
@@ -136,7 +150,7 @@ jobs:
           $( cat ../config/imagebuilder/packages_list.txt )
 
           # FILES
-          $( cat ../config/imagebuilder/files.cfg )
+          $( grep -r -E '*' ../config/imagebuilder/files | sed -e 's@\.\./config/imagebuilder/files@@g' )
 
           \`\`\`
 
@@ -147,20 +161,22 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |+
-            const prereleases = await github.rest.repos.listReleases({
+            const __prereleases = await github.rest.repos.listReleases({
               owner: context.repo.owner,
               repo: context.repo.repo,
               per_page: 100,
             });
+            const prereleases = __prereleases.data
 
-            for (const property in prereleases) {
-              if ( property.draft == true && property.prerelease == true ) {
-                console.log('delte pre-release ' + property['id'] + '\t' + property['name'])
+            for (const index in prereleases) {
+              if (prereleases[index].draft == true &&
+                  prereleases[index].prerelease == true ) {
+                console.log('delte pre-release ' + prereleases[index]['id'] + '\t' + prereleases[index]['name'])
 
-                github.rest.repos.deleteRelease({
+                await github.rest.repos.deleteRelease({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  release_id: property['id'],
+                  release_id: prereleases[index]['id'],
                 });
               }
             }
