@@ -94,6 +94,7 @@ jobs:
         run: |+
           set -eux
           echo "BUILD_OPENWRT_VERSION=$(cat ./version.tag) ($(cat ./version.buildinfo))" >> $GITHUB_ENV
+          echo "BUILD_OPENWRT_TAG=$(cat ./version.tag)" >> $GITHUB_ENV
 
       - name: Download dnsmasq-full patch version
         working-directory: imagebuilder
@@ -117,6 +118,8 @@ jobs:
             FILES="${{ github.workspace }}/config/imagebuilder/files"
 
           ls -lah ./bin/targets/mvebu/cortexa9
+
+          mv -v ./imagebuilder/bin/targets/mvebu/cortexa9/openwrt-${BUILD_OPENWRT_TAG#v}-${COMMIT_SHORT_SHA}-mvebu-cortexa9-fortinet_fg-50e-squashfs-sysupgrade.bin
 
       - name: Generate Release note
         working-directory: imagebuilder

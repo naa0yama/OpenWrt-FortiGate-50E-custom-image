@@ -15,7 +15,6 @@ https-dns-proxy
 ip-full
 irqbalance
 keepalived
-keepalived
 keepalived-sync
 luci
 luci-app-cloudflared
