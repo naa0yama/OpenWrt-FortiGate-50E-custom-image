@@ -24,6 +24,7 @@ luci-app-keepalived
 luci-app-mwan3
 luci-i18n-base-ja
 mwan3
+openssh-keygen
 prometheus-node-exporter-lua
 prometheus-node-exporter-lua-nat_traffic
 prometheus-node-exporter-lua-netstat
