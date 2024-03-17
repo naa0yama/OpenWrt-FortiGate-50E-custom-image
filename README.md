@@ -48,6 +48,9 @@ Global build settings
             {*} kmod-vxlan................................... Native VXLAN Kernel support
             -*- kmod-wireguard........................... WireGuard secure network tunnel
 
+    Network  ---> 
+        <*> keepalived..... VRRP with failover and monitoring daemon for LVS clusters
+
 ```
 
 Packages
