@@ -14,6 +14,7 @@ htop
 https-dns-proxy
 ip-full
 irqbalance
+keepalived
 luci
 luci-app-cloudflared
 luci-app-commands
