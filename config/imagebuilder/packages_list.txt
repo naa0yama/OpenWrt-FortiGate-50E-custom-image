@@ -15,10 +15,13 @@ https-dns-proxy
 ip-full
 irqbalance
 keepalived
+keepalived
+keepalived-sync
 luci
 luci-app-cloudflared
 luci-app-commands
 luci-app-https-dns-proxy
+luci-app-keepalived
 luci-app-mwan3
 luci-i18n-base-ja
 mwan3
