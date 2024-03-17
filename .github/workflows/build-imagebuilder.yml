@@ -129,7 +129,7 @@ jobs:
 
           cat <<EOF> ${{ github.workspace }}-ReleaseNote.txt
           * OpenWrt ${{ env.BUILD_OPENWRT_VERSION }}
-          * My repo Commit hash: \`${{ env.COMMIT_SHORT_SHA }}\`
+          * My repo Commit hash: ${{ github.sha }}
 
           This firmware was built by @naa0yama
 
