@@ -193,7 +193,6 @@ jobs:
           body_path: ${{ github.workspace }}-ReleaseNote.txt
           draft: true
           prerelease: true
-          target_commitish: ${{ github.head_ref }}
           files: |
             ./openwrt-*mvebu-cortexa9-fortinet_fg-50e-initramfs-kernel.bin
             ./imagebuilder/bin/targets/mvebu/cortexa9/openwrt-*mvebu-cortexa9-fortinet_fg-50e-squashfs-sysupgrade.bin
