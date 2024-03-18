@@ -116,6 +116,13 @@ jobs:
           cp ../config/mvebu-cortexa9-fortinet_fg-50e.ini .config
           make defconfig
 
+      - name: Patches Source code
+        working-directory: openwrt
+        run: |+
+          set -eux
+
+          patch -p1 < ${{ github.workspace }}/config/patches/*.patch
+
       - name: Building firmware
         working-directory: openwrt
         run: |+

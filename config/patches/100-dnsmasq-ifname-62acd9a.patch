@@ -1,0 +1,152 @@
+commit 62acd9a2f9f18f30997d23b479abaea4940a4273
+Author: Yegor Yefremov <yegorslists@googlemail.com>
+Date:   Thu Feb 15 09:43:09 2024 +0100
+
+    dnsmasq: rework network interface ignore
+
+    In some situations (slow protocol or interfaces with auto 0), the
+    interfaces are not available during the dnsmasq initialization and
+    hence, the ignore setting will be skipped.
+
+    Install an interface trigger for ignored interfaces in case their
+    ifname cannot be resolved.
+
+    Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+    [bump PKG_RELEASE]
+    Signed-off-by: Jo-Philipp Wich <jo@mein.io>
+
+diff --git a/package/network/services/dnsmasq/Makefile b/package/network/services/dnsmasq/Makefile
+index 4272398a92..e33d866304 100644
+--- a/package/network/services/dnsmasq/Makefile
++++ b/package/network/services/dnsmasq/Makefile
+@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
+ PKG_NAME:=dnsmasq
+ PKG_UPSTREAM_VERSION:=2.89
+ PKG_VERSION:=$(subst test,~~test,$(subst rc,~rc,$(PKG_UPSTREAM_VERSION)))
+-PKG_RELEASE:=4
++PKG_RELEASE:=8
+
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_UPSTREAM_VERSION).tar.xz
+ PKG_SOURCE_URL:=https://thekelleys.org.uk/dnsmasq/
+diff --git a/package/network/services/dnsmasq/files/dnsmasq.init b/package/network/services/dnsmasq/files/dnsmasq.init
+index 2a3327b0c6..b43abdb8f7 100755
+--- a/package/network/services/dnsmasq/files/dnsmasq.init
++++ b/package/network/services/dnsmasq/files/dnsmasq.init
+@@ -509,7 +509,6 @@ dhcp_boot_add() {
+ 	dhcp_option_add "$cfg" "$networkid" "$force"
+ }
+
+-
+ dhcp_add() {
+ 	local cfg="$1"
+ 	local dhcp6range="::"
+@@ -540,8 +539,13 @@ dhcp_add() {
+ 	# Do not support non-static interfaces for now
+ 	[ static = "$proto" ] || return 0
+
++	ipaddr="${subnet%%/*}"
++	prefix_or_netmask="${subnet##*/}"
++
+ 	# Override interface netmask with dhcp config if applicable
+-	config_get netmask "$cfg" netmask "${subnet##*/}"
++	config_get netmask "$cfg" netmask
++
++	[ -n "$netmask" ] && prefix_or_netmask="$netmask"
+
+ 	#check for an already active dhcp server on the interface, unless 'force' is set
+ 	config_get_bool force "$cfg" force 0
+@@ -567,6 +571,7 @@ dhcp_add() {
+ 	config_get ra_management "$cfg" ra_management
+ 	config_get ra_preference "$cfg" ra_preference
+ 	config_get dns "$cfg" dns
++	config_get dns_sl "$cfg" domain
+
+ 	config_list_foreach "$cfg" "interface_name" append_interface_name "$ifname"
+
+@@ -582,12 +587,8 @@ dhcp_add() {
+
+ 	nettag="${networkid:+set:${networkid},}"
+
+-	if [ "$limit" -gt 0 ] ; then
+-		limit=$((limit-1))
+-	fi
+-
+ 	# make sure the DHCP range is not empty
+-	if [ "$dhcpv4" != "disabled" ] && eval "$(ipcalc.sh "${subnet%%/*}" "$netmask" "$start" "$limit")" ; then
++	if [ "$dhcpv4" != "disabled" ] && ipcalc "$ipaddr/$prefix_or_netmask" "$start" "$limit" ; then
+ 		[ "$dynamicdhcpv4" = "0" ] && END="static"
+
+ 		xappend "--dhcp-range=$tags$nettag$START,$END,$NETMASK,$leasetime${options:+ $options}"
+@@ -650,6 +651,13 @@ dhcp_add() {
+ 		fi
+
+ 		dhcp_option_append "option6:dns-server,$dnss" "$networkid"
++
++		if [ -n "$dns_sl" ]; then
++			ddssl=""
++			for dd in $dns_sl; do append ddssl "$dd" ","; done
++		fi
++
++		dhcp_option_append "option6:domain-search,$ddssl" "$networkid"
+ 	fi
+
+ 	dhcp_option_add "$cfg" "$networkid" 0
+@@ -854,7 +862,7 @@ dnsmasq_start()
+ {
+ 	local cfg="$1"
+ 	local disabled user_dhcpscript logfacility
+-	local resolvfile resolvdir localuse=0
++	local resolvfile resolvdir localuse=1
+
+ 	config_get_bool disabled "$cfg" disabled 0
+ 	[ "$disabled" -gt 0 ] && return 0
+@@ -1051,7 +1059,7 @@ dnsmasq_start()
+ 		config_get resolvfile "$cfg" resolvfile /tmp/resolv.conf.d/resolv.conf.auto
+ 		[ -n "$resolvfile" ] && [ ! -e "$resolvfile" ] && touch "$resolvfile"
+ 		xappend "--resolv-file=$resolvfile"
+-		[ "$resolvfile" = "/tmp/resolv.conf.d/resolv.conf.auto" ] && localuse=1
++		[ "$resolvfile" != "/tmp/resolv.conf.d/resolv.conf.auto" ] && localuse=0
+ 		resolvdir="$(dirname "$resolvfile")"
+ 	fi
+ 	config_get_bool localuse "$cfg" localuse "$localuse"
+@@ -1222,12 +1230,12 @@ dnsmasq_start()
+ dnsmasq_stop()
+ {
+ 	local cfg="$1"
+-	local noresolv resolvfile localuse=0
++	local noresolv resolvfile localuse=1
+
+ 	config_get_bool noresolv "$cfg" noresolv 0
+ 	config_get resolvfile "$cfg" "resolvfile"
+
+-	[ "$noresolv" = 0 ] && [ "$resolvfile" = "/tmp/resolv.conf.d/resolv.conf.auto" ] && localuse=1
++	[ "$noresolv" = 0 ] && [ "$resolvfile" != "/tmp/resolv.conf.d/resolv.conf.auto" ] && localuse=0
+ 	config_get_bool localuse "$cfg" localuse "$localuse"
+ 	[ "$localuse" -gt 0 ] && ln -sf "/tmp/resolv.conf.d/resolv.conf.auto" /tmp/resolv.conf
+
+@@ -1236,10 +1244,11 @@ dnsmasq_stop()
+
+ add_interface_trigger()
+ {
+-	local interface ignore
++	local interface ifname ignore
+
+ 	config_get interface "$1" interface
+ 	config_get_bool ignore "$1" ignore 0
++	network_get_device ifname "$interface" || ignore=0
+
+ 	[ -n "$interface" ] && [ $ignore -eq 0 ] && procd_add_interface_trigger "interface.*" "$interface" /etc/init.d/dnsmasq reload
+ }
+diff --git a/package/network/services/dnsmasq/patches/200-ubus_dns.patch b/package/network/services/dnsmasq/patches/200-ubus_dns.patch
+index 8a70bb8bdf..ccbe70ab9c 100644
+--- a/package/network/services/dnsmasq/patches/200-ubus_dns.patch
++++ b/package/network/services/dnsmasq/patches/200-ubus_dns.patch
+@@ -210,7 +210,7 @@
+ +    return;
+ +
+ +  ubus_free(ubus);
+-+  ubus = NULL;
+++  daemon->ubus = NULL;
+ +}
+ +
+  static int ubus_handle_metrics(struct ubus_context *ctx, struct ubus_object *obj,

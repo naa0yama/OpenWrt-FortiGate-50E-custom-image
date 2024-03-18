@@ -40,6 +40,21 @@ Global build settings
         (naa0yama) Manufacturer name
         (https://github.com/naa0yama) Manufacturer URL
 
+    Base system  --->
+        <*> dnsmasq.............................................. DNS and DHCP server
+        <M> dnsmasq-dhcpv6................. DNS and DHCP server (with DHCPv6 support)
+        <M> dnsmasq-full
+        [*]   Build with DHCP support. (NEW)
+        [*]     Build with DHCPv6 support. (NEW)
+        [*]   Build with DNSSEC support. (NEW)
+        [*]   Build with the facility to act as an authoritative DNS server. (NEW)
+        [*]   Build with IPset support.
+        [*]   Build with Nftset support. (NEW)
+        [*]   Build with Conntrack support. (NEW)
+        [*]   Build with NO_ID. (hide *.bind pseudo domain) (NEW)
+        [*]   Build with HAVE_BROKEN_RTC.
+        [*]   Build with TFTP server support. (NEW)
+
     Kernel modules  --->
         Network Support  --->
             <*> kmod-tcp-bbr.................................. BBR TCP congestion control
@@ -51,11 +66,6 @@ Global build settings
     Network  ---> 
         <*> keepalived..... VRRP with failover and monitoring daemon for LVS clusters
 
-```
-
-Packages
-
-```bash
 ```
 
 ## Local build
@@ -106,6 +116,13 @@ curl -o .config https://downloads.openwrt.org/releases/23.05.2/targets/mvebu/cor
 
 ```bash
 make defconfig
+
+```
+
+## Memu で編集
+
+```bash
+make menuconfig
 
 ```
 
