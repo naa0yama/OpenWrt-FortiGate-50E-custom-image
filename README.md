@@ -30,6 +30,7 @@ Global build settings
         [*] L3 Master device support
 
 [*] Build the OpenWrt Image Builder
+[*]   Include package repositories
 [ ] Build the OpenWrt SDK
 [ ] Build the LLVM-BPF toolchain tarball
 [ ] Package the OpenWrt-based Toolchain
@@ -41,9 +42,9 @@ Global build settings
         (https://github.com/naa0yama) Manufacturer URL
 
     Base system  --->
-        <*> dnsmasq.............................................. DNS and DHCP server
-        <M> dnsmasq-dhcpv6................. DNS and DHCP server (with DHCPv6 support)
-        <M> dnsmasq-full
+        < > dnsmasq.............................................. DNS and DHCP server
+        < > dnsmasq-dhcpv6................. DNS and DHCP server (with DHCPv6 support)
+        <*> dnsmasq-full
         [*]   Build with DHCP support. (NEW)
         [*]     Build with DHCPv6 support. (NEW)
         [*]   Build with DNSSEC support. (NEW)
@@ -55,17 +56,10 @@ Global build settings
         [*]   Build with HAVE_BROKEN_RTC.
         [*]   Build with TFTP server support. (NEW)
 
-    Kernel modules  --->
-        Network Support  --->
-            <*> kmod-tcp-bbr.................................. BBR TCP congestion control
-            <*> kmod-veth................................... Virtual ethernet pair device
-            <*> kmod-vrf........................... Virtual Routing and Forwarding (Lite)
-            {*} kmod-vxlan................................... Native VXLAN Kernel support
-            -*- kmod-wireguard........................... WireGuard secure network tunnel
-
     Network  ---> 
         <*> keepalived..... VRRP with failover and monitoring daemon for LVS clusters
-
+            [*] Enable BFD support
+            
 ```
 
 ## Local build
