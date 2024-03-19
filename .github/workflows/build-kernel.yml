@@ -105,6 +105,9 @@ jobs:
         run: |+
           set -eux
 
+          sed -i'' -e 's@git.openwrt.org/feed@github.com/openwrt@g' ./feeds.conf.default
+          sed -i'' -e 's@git.openwrt.org/project@github.com/openwrt@g' ./feeds.conf.default
+
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
@@ -122,6 +125,8 @@ jobs:
           set -eux
 
           patch -p1 < ${{ github.workspace }}/config/patches/*.patch
+
+          ./scripts/feeds install -a
 
       - name: Building firmware
         working-directory: openwrt
