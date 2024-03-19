@@ -151,7 +151,7 @@ jobs:
             <summary>Packages files</summary>
 
           \`\`\`bash
-          $( ls -lah ./packages )
+          $( ls -lah ./packages/* )
 
           \`\`\`
 
