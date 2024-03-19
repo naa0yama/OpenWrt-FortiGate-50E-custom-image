@@ -154,6 +154,19 @@ jobs:
 
           \`\`\`
 
+
+          ## Packages
+
+          <details>
+            <summary>Packages files</summary>
+
+              \`\`\`bash
+              $( cat ./bin/targets/mvebu/cortexa9/sha256sums )
+
+              \`\`\`
+
+          </details>
+
           EOF
 
       - name: Cleanup pre-releases
