@@ -42,6 +42,15 @@ jobs:
               - '.github/workflows/build-kernel.yml'
               - 'config/mvebu-cortexa9-fortinet_fg-50e.ini'
 
+  build-kernel:
+    permissions:
+      actions: write
+
+    needs:
+      - changes
+    if: ${{ ! failure() }} && ${{ needs.changes.outputs.build-kernel == 'true' }}
+    uses: ./.github/workflows/build-kernel.yml
+
   build-imagebuilder:
     permissions:
       actions: read
@@ -49,13 +58,6 @@ jobs:
 
     needs:
       - changes
-    if: ${{ needs.changes.outputs.build-imagebuilder == 'true' }}
+      - build-kernel
+    if: ${{ ! failure() }} && ${{ needs.changes.outputs.build-imagebuilder == 'true' }}
     uses: ./.github/workflows/build-imagebuilder.yml
-
-  build-kernel:
-    permissions:
-      actions: write
-
-    needs: changes
-    if: ${{ needs.changes.outputs.build-kernel == 'true' }}
-    uses: ./.github/workflows/build-kernel.yml
