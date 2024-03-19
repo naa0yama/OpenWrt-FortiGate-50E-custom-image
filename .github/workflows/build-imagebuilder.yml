@@ -151,7 +151,7 @@ jobs:
             <summary>Packages files</summary>
 
           \`\`\`bash
-          $( cat ./imagebuilder/packages )
+          $( ls -lah ./imagebuilder/packages )
 
           \`\`\`
 
