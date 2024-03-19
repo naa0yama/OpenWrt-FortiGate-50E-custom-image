@@ -1,8 +1,6 @@
--dnsmasq
 chrony-nts
 cloudflared
 dmesg
-dnsmasq-full
 frr
 frr-bfdd
 frr-bgpd
