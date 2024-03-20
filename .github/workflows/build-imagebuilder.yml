@@ -121,6 +121,7 @@ jobs:
           cp -av ./packages/arm_cortex-a9_vfpv3-d16/telephony/ ./imagebuilder/packages
 
       - name: Set OpenWrt version
+        working-directory: imagebuilder/bin/targets/mvebu/cortexa9
         run: |+
           set -eux
           echo "BUILD_OPENWRT_VERSION=$(cat ./version.tag) ($(cat ./version.buildinfo))" >> $GITHUB_ENV
