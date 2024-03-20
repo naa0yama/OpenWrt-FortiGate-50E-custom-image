@@ -16,8 +16,9 @@ jobs:
     timeout-minutes: 180 # default 6 hour
     env:
       TZ: Asia/Tokyo
-      COMMIT_SHORT_SHA: null
       BUILD_OPENWRT_VERSION: null
+      COMMIT_SHORT_SHA: null
+      LOCAL_BRANCH_NAME: null
     permissions:
       actions: read
       contents: write
@@ -27,10 +28,18 @@ jobs:
         uses: actions/checkout@v4.1.1
 
       - name: Set short git commit SHA
-        id: vars
         run: |+
+          set -eux
+
           calculatedSha=$(git rev-parse --short ${{ github.sha }})
           echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+
+      - name: Extract branch name
+        id: extract_branch
+        run: |+
+          set -eux
+
+          echo "LOCAL_BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
 
       - name: Confirm git commit SHA output
         run: echo ${{ env.COMMIT_SHORT_SHA }}
@@ -45,7 +54,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'build-kernel.yml',
-              branch: '${{ github.head_ref }}',
+              branch: '${{ env.LOCAL_BRANCH_NAME }}',
               status: 'success',
               per_page: 1,
             });
