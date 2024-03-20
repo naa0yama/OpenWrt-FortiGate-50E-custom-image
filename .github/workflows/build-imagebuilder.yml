@@ -110,7 +110,7 @@ jobs:
 
           cp -av ./targets/mvebu/cortexa9/packages ./imagebuilder/packages
 
-      - name: Patches Packages
+      - name: Copy imagebuilder/packages from archive
         run: |+
           set -eux
 
@@ -228,5 +228,3 @@ jobs:
           files: |
             ./openwrt-*mvebu-cortexa9-fortinet_fg-50e-initramfs-kernel.bin
             ./imagebuilder/bin/targets/mvebu/cortexa9/openwrt-*-sysupgrade.bin
-            ./imagebuilder/bin/targets/mvebu/cortexa9/profiles.json
-            ./imagebuilder/bin/targets/mvebu/cortexa9/sha256sums

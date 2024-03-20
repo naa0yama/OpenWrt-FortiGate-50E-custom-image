@@ -7,7 +7,7 @@ on:
     inputs:
       version:
         required: true
-        default: "v23.05.2"
+        default: "23.05"
         description: OpenWrt version
         type: string
 
@@ -32,7 +32,7 @@ jobs:
     env:
       TZ: Asia/Tokyo
       COMMIT_SHORT_SHA: null
-      BUILD_OPENWRT_VERSION: ${{ inputs.version || 'v23.05.2' }}
+      BUILD_OPENWRT_VERSION: ${{ inputs.version || '23.05' }}
     permissions:
       actions: write
 
@@ -60,7 +60,7 @@ jobs:
         run: |+
           set -eux
 
-          git clone --verbose --progress --depth 1 --branch "${{ env.BUILD_OPENWRT_VERSION }}" \
+          git clone --verbose --progress --depth 1 --branch "openwrt-${{ env.BUILD_OPENWRT_VERSION }}" \
           https://github.com/openwrt/openwrt.git
           cd openwrt
 
@@ -113,15 +113,6 @@ jobs:
 
           cp ../config/mvebu-cortexa9-fortinet_fg-50e.ini .config
           make defconfig
-
-      - name: Patches Source code
-        working-directory: openwrt
-        run: |+
-          set -eux
-
-          patch -p1 < ${{ github.workspace }}/config/patches/*.patch
-
-          ./scripts/feeds install -a
 
       - name: Building firmware
         working-directory: openwrt
