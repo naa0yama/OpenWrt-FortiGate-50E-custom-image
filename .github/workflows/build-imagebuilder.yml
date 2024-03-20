@@ -86,9 +86,19 @@ jobs:
           set -eux
 
           mkdir -p imagebuilder
-          tar -Jxf openwrt-imagebuilder-*.tar.xz --strip-components 1 -C ./imagebuilder
+          tar -Jxfv openwrt-imagebuilder-*.tar.xz --strip-components 1 -C ./imagebuilder
 
           cp -av ./packages ./imagebuilder/packages
+
+      - name: Patches Packages
+        run: |+
+          set -eux
+
+          cp -av ./arm_cortex-a9_vfpv3-d16/base/      ./imagebuilder/packages
+          cp -av ./arm_cortex-a9_vfpv3-d16/luci/      ./imagebuilder/packages
+          cp -av ./arm_cortex-a9_vfpv3-d16/packages/  ./imagebuilder/packages
+          cp -av ./arm_cortex-a9_vfpv3-d16/routing/   ./imagebuilder/packages
+          cp -av ./arm_cortex-a9_vfpv3-d16/telephony/ ./imagebuilder/packages
 
       - name: Set OpenWrt version
         run: |+
