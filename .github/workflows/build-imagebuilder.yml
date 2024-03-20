@@ -2,11 +2,7 @@ name: Build ImageBuilder
 # Ref: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
 on:
-  schedule:
-    # https://crontab.guru
-    # Cache 切れ回避
-    - cron: "0 06 * * 1,4" # daily 14:00 +0900 月,木
-
+  schedule: []
   workflow_call: {}
   workflow_dispatch: {}
 
@@ -52,7 +48,7 @@ jobs:
             const listWorkflowRuns = await github.rest.actions.listWorkflowRuns({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'build-kernel.yml',
+              workflow_id: '_protect-branch.yml',
               branch: '${{ env.LOCAL_BRANCH_NAME }}',
               status: 'success',
               per_page: 1,

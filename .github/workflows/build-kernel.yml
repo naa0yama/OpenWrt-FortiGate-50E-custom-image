@@ -2,11 +2,7 @@ name: Build Kernel
 # Ref: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
 on:
-  schedule:
-    # https://crontab.guru
-    # Cache 切れ回避
-    - cron: "0 02 * * 1,4" # daily 11:00 +0900 月,木
-
+  schedule: []
   workflow_call: {}
   workflow_dispatch:
     inputs:
