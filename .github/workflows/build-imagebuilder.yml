@@ -2,7 +2,14 @@ name: Build ImageBuilder
 # Ref: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
 on:
-  workflow_call: {}
+  workflow_call:
+    inputs:
+      run-id:
+        required: true
+        default: ""
+        description: Blank is latest run-id.
+        type: string
+
   workflow_dispatch: {}
 
 jobs:
@@ -14,6 +21,7 @@ jobs:
       BUILD_OPENWRT_VERSION: null
       COMMIT_SHORT_SHA: null
       LOCAL_BRANCH_NAME: null
+      LOCAL_RUN_ID: null
     permissions:
       actions: read
       contents: write
@@ -40,6 +48,7 @@ jobs:
 
       - name: Get last kernel-build runs
         uses: actions/github-script@v7.0.1
+        if: inputs.run-id == '""'
         id: LastKernelBuild
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -55,16 +64,24 @@ jobs:
 
             return listWorkflowRuns.data.workflow_runs[0]
 
-      - name: "Check outputs"
+      - name: "Check outputs eq \"\""
+        if: inputs.run-id == '""'
         run: |+
           set -eux
 
-          echo ${{ toJson(steps.LastKernelBuild.outputs.result) }}
+          echo "LOCAL_RUN_ID=${{ fromJson(steps.LastKernelBuild.outputs.result).id }}" >> $GITHUB_ENV
+
+      - name: "Check outputs ne \"\""
+        if: inputs.run-id != '""'
+        run: |+
+          set -eux
+
+          echo "LOCAL_RUN_ID=${{ inputs.run-id }}" >> $GITHUB_ENV
 
       - name: Download buildimage artifact
         uses: actions/download-artifact@v4
         with:
-          run-id: ${{ fromJson(steps.LastKernelBuild.outputs.result).id }}
+          run-id: ${{ env.LOCAL_RUN_ID }}
           pattern: openwrt-imagebuilder-*
           github-token: ${{ secrets.GITHUB_TOKEN }}
           merge-multiple: true
