@@ -45,7 +45,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'build-kernel.yml',
-              branch: 'main',
+              branch: '${{ github.head_ref }}',
               status: 'success',
               per_page: 1,
             });
