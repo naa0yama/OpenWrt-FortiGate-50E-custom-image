@@ -35,7 +35,6 @@ jobs:
           echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
 
       - name: Extract branch name
-        id: extract_branch
         run: |+
           set -eux
 
