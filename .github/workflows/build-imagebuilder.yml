@@ -226,5 +226,7 @@ jobs:
           draft: true
           prerelease: true
           files: |
-            './openwrt-*mvebu-cortexa9-fortinet_fg-50e-initramfs-kernel.bin'
-            './imagebuilder/bin/targets/mvebu/cortexa9/openwrt-*-squashfs-sysupgrade.bin'
+            ./openwrt-*mvebu-cortexa9-fortinet_fg-50e-initramfs-kernel.bin
+            ./imagebuilder/bin/targets/mvebu/cortexa9/openwrt-*-sysupgrade.bin
+            ./imagebuilder/bin/targets/mvebu/cortexa9/profiles.json
+            ./imagebuilder/bin/targets/mvebu/cortexa9/sha256sums
