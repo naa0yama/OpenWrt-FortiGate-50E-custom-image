@@ -18,6 +18,26 @@ on:
       - 'main'
 
   workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        default: "23.05"
+        description: OpenWrt version
+        type: string
+
+      make_options:
+        required: true
+        default: "V=c"
+        description: |
+          make options. (default: "V=c")
+
+          [s]: stdout+stderr, [c]: commands, [w]: warnings/errors only
+        type: choice
+        options:
+          - "V=c"
+          - "V=w"
+          - "V=sc"
+          - "V=sw"
 
 jobs:
   changes:
@@ -55,6 +75,9 @@ jobs:
       - changes
     if: ${{ ! failure() && needs.changes.outputs.build-imagebuilder == 'true' }}
     uses: ./.github/workflows/build-kernel.yml
+    with:
+      version: ${{ inputs.version }}
+      make_options: ${{ inputs.make_options }}
 
   build-imagebuilder:
     permissions:
