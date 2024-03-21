@@ -2,15 +2,7 @@ name: Build Kernel
 # Ref: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
 on:
-  workflow_call:
-    inputs:
-      version:
-        required: true
-        type: string
-
-      make_options:
-        required: true
-        type: string
+  workflow_call: {}
 
   workflow_dispatch:
     inputs:
@@ -41,7 +33,7 @@ jobs:
     env:
       TZ: Asia/Tokyo
       COMMIT_SHORT_SHA: null
-      BUILD_OPENWRT_VERSION: ${{ inputs.version }}
+      BUILD_OPENWRT_VERSION: ${{ inputs.version || '23.05' }}
     permissions:
       actions: write
 
