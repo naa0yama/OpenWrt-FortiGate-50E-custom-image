@@ -8,7 +8,7 @@ on:
     inputs:
       version:
         required: true
-        default: "23.05"
+        default: "23.05.2"
         description: OpenWrt version
         type: string
 
@@ -33,7 +33,7 @@ jobs:
     env:
       TZ: Asia/Tokyo
       COMMIT_SHORT_SHA: null
-      BUILD_OPENWRT_VERSION: ${{ inputs.version || '23.05' }}
+      BUILD_OPENWRT_VERSION: ${{ inputs.version || '23.05.2' }}
     permissions:
       actions: write
 
@@ -61,7 +61,7 @@ jobs:
         run: |+
           set -eux
 
-          git clone --verbose --progress --depth 1 --branch "openwrt-${{ env.BUILD_OPENWRT_VERSION }}" \
+          git clone --verbose --progress --depth 1 --branch "v${{ env.BUILD_OPENWRT_VERSION }}" \
           https://github.com/openwrt/openwrt.git
           cd openwrt
 

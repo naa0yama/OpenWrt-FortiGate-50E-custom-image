@@ -103,6 +103,7 @@ curl -o .config https://downloads.openwrt.org/releases/23.05.2/targets/mvebu/cor
 
 ```bash
 ./scripts/diffconfig.sh > .config.diff.ini
+cp -av .config.diff.ini ../config/mvebu-cortexa9-fortinet_fg-50e.ini
 
 ```
 
