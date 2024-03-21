@@ -13,7 +13,7 @@ on:
 
       make_options:
         required: true
-        default: "V=c"
+        default: "V=sc"
         description: |
           make options. (default: "V=c")
 
