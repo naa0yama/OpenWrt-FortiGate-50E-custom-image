@@ -115,7 +115,7 @@ jobs:
           mkdir -p imagebuilder
           tar -Jxf ./targets/mvebu/cortexa9/openwrt-imagebuilder-*.tar.xz --strip-components 1 -C ./imagebuilder
 
-          cp -av ./targets/mvebu/cortexa9/packages ./imagebuilder/packages
+          cp -av ./targets/mvebu/cortexa9/packages/ ./imagebuilder/packages
 
       - name: Set OpenWrt version
         working-directory: ${{ github.workspace }}/targets/mvebu/cortexa9
@@ -223,5 +223,5 @@ jobs:
           draft: true
           prerelease: true
           files: |
-            ./openwrt-*mvebu-cortexa9-fortinet_fg-50e-initramfs-kernel.bin
+            ./targets/mvebu/cortexa9/openwrt-*-initramfs-kernel.bin
             ./imagebuilder/bin/targets/mvebu/cortexa9/openwrt-*-sysupgrade.bin
