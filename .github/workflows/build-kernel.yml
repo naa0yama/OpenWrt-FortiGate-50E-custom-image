@@ -135,7 +135,6 @@ jobs:
 
       - name: Upload to GitHub Actions Artifacts
         uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() && !failure() }}
         with:
           name: openwrt-imagebuilder-${{ env.BUILD_OPENWRT_VERSION }}-${{ env.COMMIT_SHORT_SHA }}
           path: |
