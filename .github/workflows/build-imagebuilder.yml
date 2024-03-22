@@ -86,12 +86,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           merge-multiple: true
 
-      - name: Display structure of downloaded files
-        run: |+
-          set -eux
-
-          ls -R
-
       - name: Installing dependencies
         run: |+
           set -eux
@@ -99,7 +93,20 @@ jobs:
           sudo apt update
           sudo apt install --no-install-recommends --no-install-suggests --yes \
           build-essential libncurses-dev zlib1g-dev gawk \
-          gettext libssl-dev xsltproc rsync wget  unzip python3 python3-distutils
+          gettext libssl-dev xsltproc rsync wget  unzip python3 python3-distutils \
+          tree
+
+      - name: Display structure of downloaded files ls -R
+        run: |+
+          set -eux
+
+          ls -R
+
+      - name: Display structure of downloaded files tree
+        run: |+
+          set -eux
+
+          tree
 
       - name: Unpack the archive
         run: |+
@@ -109,16 +116,6 @@ jobs:
           tar -Jxf ./targets/mvebu/cortexa9/openwrt-imagebuilder-*.tar.xz --strip-components 1 -C ./imagebuilder
 
           cp -av ./targets/mvebu/cortexa9/packages ./imagebuilder/packages
-
-      - name: Copy imagebuilder/packages from archive
-        run: |+
-          set -eux
-
-          cp -av ./packages/arm_cortex-a9_vfpv3-d16/base/      ./imagebuilder/packages
-          cp -av ./packages/arm_cortex-a9_vfpv3-d16/luci/      ./imagebuilder/packages
-          cp -av ./packages/arm_cortex-a9_vfpv3-d16/packages/  ./imagebuilder/packages
-          cp -av ./packages/arm_cortex-a9_vfpv3-d16/routing/   ./imagebuilder/packages
-          cp -av ./packages/arm_cortex-a9_vfpv3-d16/telephony/ ./imagebuilder/packages
 
       - name: Set OpenWrt version
         working-directory: ${{ github.workspace }}/targets/mvebu/cortexa9
