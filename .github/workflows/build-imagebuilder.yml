@@ -2,12 +2,14 @@ name: Build ImageBuilder
 # Ref: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
 on:
-  schedule:
-    # https://crontab.guru
-    # Cache 切れ回避
-    - cron: "0 06 * * 1,4" # daily 14:00 +0900 月,木
+  workflow_call:
+    inputs:
+      run-id:
+        required: true
+        default: ""
+        description: Blank is latest run-id.
+        type: string
 
-  workflow_call: {}
   workflow_dispatch: {}
 
 jobs:
@@ -16,8 +18,10 @@ jobs:
     timeout-minutes: 180 # default 6 hour
     env:
       TZ: Asia/Tokyo
-      COMMIT_SHORT_SHA: null
       BUILD_OPENWRT_VERSION: null
+      COMMIT_SHORT_SHA: null
+      LOCAL_BRANCH_NAME: null
+      LOCAL_RUN_ID: null
     permissions:
       actions: read
       contents: write
@@ -27,16 +31,24 @@ jobs:
         uses: actions/checkout@v4.1.1
 
       - name: Set short git commit SHA
-        id: vars
         run: |+
+          set -eux
+
           calculatedSha=$(git rev-parse --short ${{ github.sha }})
           echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+
+      - name: Extract branch name
+        run: |+
+          set -eux
+
+          echo "LOCAL_BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
 
       - name: Confirm git commit SHA output
         run: echo ${{ env.COMMIT_SHORT_SHA }}
 
       - name: Get last kernel-build runs
         uses: actions/github-script@v7.0.1
+        if: inputs.run-id == '""'
         id: LastKernelBuild
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -44,33 +56,35 @@ jobs:
             const listWorkflowRuns = await github.rest.actions.listWorkflowRuns({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'build-kernel.yml',
-              branch: 'main',
+              workflow_id: '_protect-branch.yml',
+              branch: '${{ env.LOCAL_BRANCH_NAME }}',
               status: 'success',
               per_page: 1,
             });
 
             return listWorkflowRuns.data.workflow_runs[0]
 
-      - name: "Check outputs"
+      - name: "Check outputs eq \"\""
+        if: inputs.run-id == '""'
         run: |+
           set -eux
 
-          echo ${{ toJson(steps.LastKernelBuild.outputs.result) }}
+          echo "LOCAL_RUN_ID=${{ fromJson(steps.LastKernelBuild.outputs.result).id }}" >> $GITHUB_ENV
+
+      - name: "Check outputs ne \"\""
+        if: inputs.run-id != '""'
+        run: |+
+          set -eux
+
+          echo "LOCAL_RUN_ID=${{ inputs.run-id }}" >> $GITHUB_ENV
 
       - name: Download buildimage artifact
         uses: actions/download-artifact@v4
         with:
-          run-id: ${{ fromJson(steps.LastKernelBuild.outputs.result).id }}
+          run-id: ${{ env.LOCAL_RUN_ID }}
           pattern: openwrt-imagebuilder-*
           github-token: ${{ secrets.GITHUB_TOKEN }}
           merge-multiple: true
-
-      - name: Display structure of downloaded files
-        run: |+
-          set -eux
-
-          ls -R
 
       - name: Installing dependencies
         run: |+
@@ -79,32 +93,36 @@ jobs:
           sudo apt update
           sudo apt install --no-install-recommends --no-install-suggests --yes \
           build-essential libncurses-dev zlib1g-dev gawk \
-          gettext libssl-dev xsltproc rsync wget  unzip python3 python3-distutils
+          gettext libssl-dev xsltproc rsync wget  unzip python3 python3-distutils \
+          tree
+
+      - name: Display structure of downloaded files ls -R
+        run: |+
+          set -eux
+
+          ls -R
+
+      - name: Display structure of downloaded files tree
+        run: |+
+          set -eux
+
+          tree
 
       - name: Unpack the archive
         run: |+
           set -eux
 
           mkdir -p imagebuilder
-          tar -Jxf openwrt-imagebuilder-*.tar.xz --strip-components 1 -C ./imagebuilder
+          tar -Jxf ./targets/mvebu/cortexa9/openwrt-imagebuilder-*.tar.xz --strip-components 1 -C ./imagebuilder
 
-          cp -av ./packages ./imagebuilder/packages
+          cp -av ./targets/mvebu/cortexa9/packages/ ./imagebuilder/packages
 
       - name: Set OpenWrt version
+        working-directory: ${{ github.workspace }}/targets/mvebu/cortexa9
         run: |+
           set -eux
           echo "BUILD_OPENWRT_VERSION=$(cat ./version.tag) ($(cat ./version.buildinfo))" >> $GITHUB_ENV
           echo "BUILD_OPENWRT_TAG=$(cat ./version.tag)" >> $GITHUB_ENV
-
-      - name: Download dnsmasq-full patch version
-        working-directory: imagebuilder
-        run: |+
-          set -eux
-
-          cd ./packages
-          wget https://mirror-03.infra.openwrt.org/snapshots/packages/arm_cortex-a9_vfpv3-d16/base/dnsmasq-full_2.90-1_arm_cortex-a9_vfpv3-d16.ipk
-          wget https://mirror-03.infra.openwrt.org/snapshots/packages/arm_cortex-a9_vfpv3-d16/base/libubox20240126_2024-01-26-c1be5057-1_arm_cortex-a9_vfpv3-d16.ipk
-          wget https://mirror-03.infra.openwrt.org/snapshots/packages/arm_cortex-a9_vfpv3-d16/base/libubus20231128_2023-11-28-f84eb599-1_arm_cortex-a9_vfpv3-d16.ipk
 
       - name: Building image
         working-directory: imagebuilder
@@ -154,6 +172,19 @@ jobs:
 
           \`\`\`
 
+
+          ## Packages
+
+          <details>
+            <summary>Packages files</summary>
+
+          \`\`\`bash
+          $( ls -lah ./packages/* )
+
+          \`\`\`
+
+          </details>
+
           EOF
 
       - name: Cleanup pre-releases
@@ -192,5 +223,5 @@ jobs:
           draft: true
           prerelease: true
           files: |
-            ./openwrt-*mvebu-cortexa9-fortinet_fg-50e-initramfs-kernel.bin
-            ./imagebuilder/bin/targets/mvebu/cortexa9/openwrt-*mvebu-cortexa9-fortinet_fg-50e-squashfs-sysupgrade.bin
+            ./targets/mvebu/cortexa9/openwrt-*-initramfs-kernel.bin
+            ./imagebuilder/bin/targets/mvebu/cortexa9/openwrt-*-sysupgrade.bin

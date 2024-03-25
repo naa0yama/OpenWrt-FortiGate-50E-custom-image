@@ -30,6 +30,7 @@ Global build settings
         [*] L3 Master device support
 
 [*] Build the OpenWrt Image Builder
+[*]   Include package repositories
 [ ] Build the OpenWrt SDK
 [ ] Build the LLVM-BPF toolchain tarball
 [ ] Package the OpenWrt-based Toolchain
@@ -40,22 +41,25 @@ Global build settings
         (naa0yama) Manufacturer name
         (https://github.com/naa0yama) Manufacturer URL
 
-    Kernel modules  --->
-        Network Support  --->
-            <*> kmod-tcp-bbr.................................. BBR TCP congestion control
-            <*> kmod-veth................................... Virtual ethernet pair device
-            <*> kmod-vrf........................... Virtual Routing and Forwarding (Lite)
-            {*} kmod-vxlan................................... Native VXLAN Kernel support
-            -*- kmod-wireguard........................... WireGuard secure network tunnel
+    Base system  --->
+        < > dnsmasq.............................................. DNS and DHCP server
+        < > dnsmasq-dhcpv6................. DNS and DHCP server (with DHCPv6 support)
+        <*> dnsmasq-full
+        [*]   Build with DHCP support. (NEW)
+        [*]     Build with DHCPv6 support. (NEW)
+        [*]   Build with DNSSEC support. (NEW)
+        [*]   Build with the facility to act as an authoritative DNS server. (NEW)
+        [*]   Build with IPset support.
+        [*]   Build with Nftset support. (NEW)
+        [*]   Build with Conntrack support. (NEW)
+        [*]   Build with NO_ID. (hide *.bind pseudo domain) (NEW)
+        [*]   Build with HAVE_BROKEN_RTC.
+        [*]   Build with TFTP server support. (NEW)
 
     Network  ---> 
         <*> keepalived..... VRRP with failover and monitoring daemon for LVS clusters
-
-```
-
-Packages
-
-```bash
+            [*] Enable BFD support
+            
 ```
 
 ## Local build
@@ -99,6 +103,7 @@ curl -o .config https://downloads.openwrt.org/releases/23.05.2/targets/mvebu/cor
 
 ```bash
 ./scripts/diffconfig.sh > .config.diff.ini
+cp -av .config.diff.ini ../config/mvebu-cortexa9-fortinet_fg-50e.ini
 
 ```
 
@@ -106,6 +111,13 @@ curl -o .config https://downloads.openwrt.org/releases/23.05.2/targets/mvebu/cor
 
 ```bash
 make defconfig
+
+```
+
+## Memu で編集
+
+```bash
+make menuconfig
 
 ```
 

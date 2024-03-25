@@ -22,6 +22,8 @@ luci-app-commands
 luci-app-https-dns-proxy
 luci-app-keepalived
 luci-app-mwan3
+luci-app-qos
+luci-app-sqm
 luci-i18n-base-ja
 mwan3
 openssh-keygen
