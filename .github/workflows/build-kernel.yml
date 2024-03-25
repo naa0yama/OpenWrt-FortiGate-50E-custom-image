@@ -8,7 +8,7 @@ on:
     inputs:
       version:
         required: true
-        default: "23.05.2"
+        default: "23.05.3"
         description: OpenWrt version
         type: string
 
@@ -33,7 +33,7 @@ jobs:
     env:
       TZ: Asia/Tokyo
       COMMIT_SHORT_SHA: null
-      BUILD_OPENWRT_VERSION: ${{ inputs.version || '23.05.2' }}
+      BUILD_OPENWRT_VERSION: ${{ inputs.version || '23.05.3' }}
     permissions:
       actions: write
 
