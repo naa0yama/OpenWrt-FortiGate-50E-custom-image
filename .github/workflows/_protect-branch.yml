@@ -53,7 +53,7 @@ jobs:
 
     needs:
       - changes
-    if: ${{ !cancelled() && !failure() && needs.changes.outputs.build-imagebuilder == 'true' }}
+    if: ${{ !cancelled() && !failure() && needs.changes.outputs.build-kernel == 'true' }}
     uses: ./.github/workflows/build-kernel.yml
 
   build-imagebuilder:
@@ -64,7 +64,7 @@ jobs:
     needs:
       - changes
       - build-kernel
-    if: ${{ !cancelled() && !failure() && needs.changes.outputs.build-imagebuilder == 'true' }}
+    if: ${{ !cancelled() && !failure() && needs.changes.outputs.build-imagebuilder == 'true' && needs.changes.outputs.build-kernel == 'true' }}
     uses: ./.github/workflows/build-imagebuilder.yml
     with:
       run-id: '${{ github.run_id }}'
