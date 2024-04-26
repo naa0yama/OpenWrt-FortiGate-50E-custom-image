@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 as build-base
+FROM ubuntu:24.04 as build-base
 
 ARG \
     DEBIAN_FRONTEND="noninteractive" \
